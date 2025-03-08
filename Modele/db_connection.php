@@ -3,8 +3,8 @@
 // Paramètres de connexion
 $host = 'localhost';
 $dbname = 'eco_ride';
-$username = 'root'; // Remplace par ton utilisateur MySQL
-$password = ''; // Mets ton mot de passe si nécessaire
+$username = 'root'; 
+$password = ''; 
 
 try {
     // Connexion à la base de données avec PDO
@@ -46,6 +46,13 @@ function modifierUtilisateur($pdo, $id, $pseudo, $email, $role, $credit) {
     echo "Utilisateur mis à jour avec succès !";
 }
 
-// Test de modification d'un utilisateur
-modifierUtilisateur($pdo, 1, 'UpdatedUser', 'updated@email.com', 'chauffeur', 100);
+// Fonction pour supprimer un utilisateur
+function supprimerUtilisateur($pdo, $id) {
+    $sql = "DELETE FROM utilisateurs WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    echo "Utilisateur supprimé avec succès !";
+}
+
+
 ?>
