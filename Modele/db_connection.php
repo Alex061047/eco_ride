@@ -32,7 +32,20 @@ function ajouterUtilisateur($pdo, $pseudo, $email, $mot_de_passe, $role, $credit
     echo "Utilisateur ajouté avec succès !";
 }
 
-// Test d'ajout d'un utilisateur
-ajouterUtilisateur($pdo, 'TestUser', 'testuser@email.com', 'MonSuperMotDePasse', 'passager');
+// Fonction pour modifier un utilisateur
+function modifierUtilisateur($pdo, $id, $pseudo, $email, $role, $credit) {
+    $sql = "UPDATE utilisateurs SET pseudo = :pseudo, email = :email, role = :role, credit = :credit WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':id' => $id,
+        ':pseudo' => $pseudo,
+        ':email' => $email,
+        ':role' => $role,
+        ':credit' => $credit
+    ]);
+    echo "Utilisateur mis à jour avec succès !";
+}
 
+// Test de modification d'un utilisateur
+modifierUtilisateur($pdo, 1, 'UpdatedUser', 'updated@email.com', 'chauffeur', 100);
 ?>
