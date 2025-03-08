@@ -1,0 +1,24 @@
+
+// Définition couleur Bootstrap
+
+$background: #CFA549;
+$primary: #A16D24;
+$secondary: #C5B585;
+$vert:#1C6F21;
+$beige: #E3D2AE; 
+$star: #F39A0A;
+
+// Personnalisation Bootstrap
+:root {
+    --bs-primary: $primary; /* Remplacer la couleur primaire */
+    --bs-success: #28a745; /* Remplacer la couleur de succès */
+}
+
+// css
+
+body {
+  background-color: $background;
+
+  color: #000;
+}
+

@@ -1,0 +1,10 @@
+@charset "UTF-8";
+:root {
+  --bs-primary: $primary; /* Remplacer la couleur primaire */
+  --bs-success: #28a745; /* Remplacer la couleur de succès */
+}
+
+body {
+  background-color: #CFA549;
+  color: #000;
+}/*# sourceMappingURL=app.css.map */
