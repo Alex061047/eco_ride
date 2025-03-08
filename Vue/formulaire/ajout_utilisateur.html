@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un utilisateur</title>
+</head>
+<body>
+    <h2>Ajouter un utilisateur</h2>
+    <form method="POST">
+        <label>Pseudo :</label>
+        <input type="text" name="pseudo" required><br>
+
+        <label>Email :</label>
+        <input type="email" name="email" required><br>
+
+        <label>Mot de passe :</label>
+        <input type="password" name="mot_de_passe" required><br>
+
+        <label>Rôle :</label>
+        <select name="role" required>
+            <option value="passager">Passager</option>
+            <option value="chauffeur">Chauffeur</option>
+            <option value="employe">Employé</option>
+            <option value="admin">Admin</option>
+        </select><br>
+
+        <button type="submit">Ajouter</button>
+    </form>
+</body>
+</html>

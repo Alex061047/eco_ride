@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un utilisateur</title>
+</head>
+<body>
+    <h2>Modifier un utilisateur</h2>
+    <form method="POST">
+        <label>Pseudo :</label>
+        <input type="text" name="pseudo" required><br>
+
+        <label>Email :</label>
+        <input type="email" name="email" required><br>
+
+        <label>Rôle :</label>
+        <select name="role" required>
+            <option value="passager">Passager</option>
+            <option value="chauffeur">Chauffeur</option>
+            <option value="employe">Employé</option>
+            <option value="admin">Admin</option>
+        </select><br>
+
+        <label>Credit :</label>
+        <input type="number" name="credit" required><br>
+
+        <button type="submit">Ajouter</button>
+    </form>
+</body>
+
+
+<?php modifierUtilisateur($pdo, 1, 'UpdatedUser', 'updated@email.com', 'chauffeur', 100) ?>
+
+</html>
