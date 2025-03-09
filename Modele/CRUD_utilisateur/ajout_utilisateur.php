@@ -1,6 +1,7 @@
 <?php
 
-include ('../db_connection.php');
+include '../db_connection.php';
+include '../mongodb/mongo_logs.php';
 
 // Fonction pour ajouter un utilisateur avec vérification de l'email existant
 function ajouterUtilisateur($pdo, $pseudo, $email, $mot_de_passe, $role, $credit = 20) {
@@ -30,6 +31,12 @@ function ajouterUtilisateur($pdo, $pseudo, $email, $mot_de_passe, $role, $credit
     ]);
     
     echo json_encode(["status" => "success", "message" => "Utilisateur ajouté avec succès !"]);
+
+
+
+// Enregistrement de l'ajout dans le log Mongodb
+enregistrerLog("Ajout utilisateur", "Utilisateur ajouté : ".$pseudo);
+
 }
 
 // Vérifier si la requête est une requête AJAX en POST
