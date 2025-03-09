@@ -13,9 +13,72 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${user.email}</td>
                     <td>${user.role}</td>
                     <td>${user.credit}</td>
+                    <td>
+                        <button class="edit-btn" data-id="${user.id}" data-pseudo="${user.pseudo}" data-email="${user.email}" data-role="${user.role}" data-credit="${user.credit}">Modifier</button>
+                        <button class="delete-btn" data-id="${user.id}">Supprimer</button>
+                    </td>
                 `;
                 tableBody.appendChild(row);
+            });
+
+            // Ajouter les événements aux boutons
+            document.querySelectorAll(".edit-btn").forEach(button => {
+                button.addEventListener("click", openEditModal);
+            });
+
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", deleteUser);
             });
         })
         .catch(error => console.error("Erreur lors du chargement des utilisateurs :", error));
 });
+
+//Ajout de la suppression utilisateur
+function deleteUser(event) {
+    const userId = event.target.getAttribute("data-id");
+
+    if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
+        fetch("../../Modele/CRUD_utilisateur/delete_utilisateur.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `id=${userId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            location.reload(); // Recharger la liste après suppression
+        })
+        .catch(error => console.error("Erreur lors de la suppression :", error));
+    }
+};
+
+function openEditModal(event) {
+    const button = event.target;
+    document.getElementById("editId").value = button.getAttribute("data-id");
+    document.getElementById("editPseudo").value = button.getAttribute("data-pseudo");
+    document.getElementById("editEmail").value = button.getAttribute("data-email");
+    document.getElementById("editRole").value = button.getAttribute("data-role");
+    document.getElementById("editCredit").value = button.getAttribute("data-credit");
+
+    document.getElementById("editModal").style.display = "block";
+}
+
+document.getElementById("editForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch("../../Modele/CRUD_utilisateur/update_utilisateur.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload();
+    })
+    .catch(error => console.error("Erreur lors de la modification :", error));
+});
+
+function closeEditModal() {
+    document.getElementById("editModal").style.display = "none";
+}

@@ -23,6 +23,34 @@
         </tbody>
     </table>
 
+
+    <!-- Formulaire de modification caché -->
+<div id="editModal" style="display:none;">
+    <h2>Modifier l'utilisateur</h2>
+    <form id="editForm">
+        <input type="hidden" name="id" id="editId">
+        <label>Pseudo :</label>
+        <input type="text" name="pseudo" id="editPseudo"><br>
+
+        <label>Email :</label>
+        <input type="email" name="email" id="editEmail"><br>
+
+        <label>Rôle :</label>
+        <select name="role" id="editRole">
+            <option value="passager">Passager</option>
+            <option value="chauffeur">Chauffeur</option>
+            <option value="employe">Employé</option>
+            <option value="admin">Admin</option>
+        </select><br>
+
+        <label>Crédit :</label>
+        <input type="number" name="credit" id="editCredit"><br>
+
+        <button type="submit">Modifier</button>
+        <button type="button" onclick="closeEditModal()">Annuler</button>
+    </form>
+</div>
+
     <script src="../../Controleur/liste_utilisateurs.js"></script>
 </body>
 </html>
