@@ -1,9 +1,6 @@
 <?php
 
 require 'mongo_connection.php';
-require __DIR__ . '../../../vendor/autoload.php';
-
-use MongoDB\BSON\UTCDateTime;
 
 function enregistrerLog($action, $details) {
     global $logsCollection;
@@ -11,7 +8,7 @@ function enregistrerLog($action, $details) {
     $log = [
         'action' => $action,
         'details' => $details,
-        'timestamp' => new MongoDB\BSON\UTCDateTime()
+        'timestamp' => (new DateTime())->format(DATE_ATOM)
     ];
 
     $logsCollection->insertOne($log);

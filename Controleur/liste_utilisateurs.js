@@ -52,6 +52,7 @@ function deleteUser(event) {
     }
 };
 
+//Ajout de la modification utilisateur
 function openEditModal(event) {
     const button = event.target;
     document.getElementById("editId").value = button.getAttribute("data-id");
