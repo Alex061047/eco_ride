@@ -40,10 +40,10 @@ function deleteUser(event) {
     if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
         fetch("../../Modele/CRUD_utilisateur/delete_utilisateur.php", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `id=${userId}`
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: userId }) // Envoi en JSON
         })
-        .then(response => response.json())
+        .then(response => response.json()) // Conversion de la réponse en JSON
         .then(data => {
             alert(data.message);
             location.reload(); // Recharger la liste après suppression
@@ -55,7 +55,9 @@ function deleteUser(event) {
 //Ajout de la modification utilisateur
 function openEditModal(event) {
     const button = event.target;
-    document.getElementById("editId").value = button.getAttribute("data-id");
+    const userId = button.getAttribute("data-id");
+
+    document.getElementById("editId").value = userId;
     document.getElementById("editPseudo").value = button.getAttribute("data-pseudo");
     document.getElementById("editEmail").value = button.getAttribute("data-email");
     document.getElementById("editRole").value = button.getAttribute("data-role");
@@ -64,13 +66,23 @@ function openEditModal(event) {
     document.getElementById("editModal").style.display = "block";
 }
 
+
 document.getElementById("editForm").addEventListener("submit", function(event) {
     event.preventDefault();
-    const formData = new FormData(this);
+
+    const formData = {
+        id: document.getElementById("editId").value,
+        pseudo: document.getElementById("editPseudo").value,
+        email: document.getElementById("editEmail").value,
+        role: document.getElementById("editRole").value,
+        credit: document.getElementById("editCredit").value
+    };
+
 
     fetch("../../Modele/CRUD_utilisateur/update_utilisateur.php", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
     })
     .then(response => response.json())
     .then(data => {
@@ -79,6 +91,7 @@ document.getElementById("editForm").addEventListener("submit", function(event) {
     })
     .catch(error => console.error("Erreur lors de la modification :", error));
 });
+
 
 function closeEditModal() {
     document.getElementById("editModal").style.display = "none";

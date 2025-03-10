@@ -2,8 +2,9 @@
 include '../db_connection.php'; // Connexion à la BDD
 include '../mongodb/mongo_logs.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
-    $id = $_POST['id'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id = $data['id'] ?? null;
     $sql = "DELETE FROM utilisateurs WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':id' => $id]);

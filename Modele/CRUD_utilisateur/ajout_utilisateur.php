@@ -1,5 +1,4 @@
 <?php
-
 include '../db_connection.php';
 include '../mongodb/mongo_logs.php';
 
@@ -32,30 +31,30 @@ function ajouterUtilisateur($pdo, $pseudo, $email, $mot_de_passe, $role, $credit
     
     echo json_encode(["status" => "success", "message" => "Utilisateur ajouté avec succès !"]);
 
-
-
-// Enregistrement de l'ajout dans le log Mongodb
-enregistrerLog("Ajout utilisateur", "Utilisateur ajouté : ".$pseudo);
-
+    // Enregistrement de l'ajout dans le log MongoDB
+    enregistrerLog("Ajout utilisateur", "Utilisateur ajouté : " . $pseudo);
 }
 
-// Vérifier si la requête est une requête AJAX en POST
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax'])) {
+// Vérifier si la requête est une requête POST en JSON
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header('Content-Type: application/json');
-    
-    if (!empty($_POST['pseudo']) && !empty($_POST['email']) && !empty($_POST['mot_de_passe']) && !empty($_POST['role'])) {
-        ajouterUtilisateur($pdo, $_POST['pseudo'], $_POST['email'], $_POST['mot_de_passe'], $_POST['role']);
+
+    // Récupérer les données JSON envoyées par Fetch
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!empty($data['pseudo']) && !empty($data['email']) && !empty($data['mot_de_passe']) && !empty($data['role'])) {
+        ajouterUtilisateur($pdo, $data['pseudo'], $data['email'], $data['mot_de_passe'], $data['role']);
     } else {
         echo json_encode(["status" => "error", "message" => "Veuillez remplir tous les champs."]);
     }
     exit;
 }
+
+
 ?>
 
 <!--Importer le formulaire-->
 <div id="fichier_importe"></div>
 <div id="message"></div>
 
-
-  <script src="../../Controleur/ajout_utilisateur.js"></script>
-
+<script src="../../Controleur/ajout_utilisateur.js"></script>
