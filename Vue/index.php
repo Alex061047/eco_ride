@@ -20,14 +20,17 @@
 <?php include ('navbar.html'); ?> 
 </header>
 
-<body>
-    
-<p>Salut</p>
+<main id="main-page">
 
-</body>
+<!--Intégration des pages de navigation-->
 
-<footer>
+</main>
 
+<footer class="footer text-black py-3 mt-auto">
+    <div class="container d-flex justify-content-between">
+        <p class="mb-0">contact@ecoride.fr</p>
+        <a href="#" class="text-black">Mention légale</a>
+    </div>
 </footer>
 
 <!--Intégration Bootstrap Js et Popper-->
