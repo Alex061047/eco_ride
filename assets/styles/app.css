@@ -11,6 +11,10 @@
   background-color: var(--primary-color) !important;
 }
 
+.btn-success {
+  background-color: var(--success-color) !important;
+}
+
 html, body {
   height: 100%;
   display: flex;
@@ -21,4 +25,24 @@ html, body {
 .footer {
   margin-top: auto;
   background-color: var(--primary-color);
+}
+
+/* Style des champs du formulaire */
+.form-control {
+  text-align: center; /* Centre le texte  */
+  border-radius: 50px; /* Arrondit les angles */
+  background-color: var(--beige-color);
+  border: 1px solid var(--secondary-color); /* Ajoute une bordure */
+}
+
+/* Change la couleur du placeholder */
+::-moz-placeholder {
+  color: rgb(0, 0, 0);
+}
+::placeholder {
+  color: rgb(0, 0, 0);
+}
+
+.btn {
+  border-radius: 50px; /* Arrondit les angles */
 }/*# sourceMappingURL=app.css.map */
