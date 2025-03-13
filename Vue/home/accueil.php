@@ -40,3 +40,40 @@
 
 </form>
 </section>
+
+<section class="container">
+<div class="d-flex justify-content-center">
+    <div class="col-6 mt-5 pt-5 px-5 text-center">
+<h3 class="fw-light"><u>Qui sommes nous ?</u></h3> 
+ <!--Texte-->
+<div class="mt-3 pt-5">
+    <p>
+    Nec vox accusatoris ulla licet subditicii in his malorum quaerebatur acervis ut saltem specie tenus crimina 
+    praescriptis legum committerentur, quod aliquotiens fecere principes saevi: sed quicquid Caesaris implacabilitati 
+    sedisset, id velut fas iusque perpensum confestim urgebatur impleri.
+    </p>
+</div>
+    </div>
+    <!--Image 1-->
+    <div class="col-6 mt-3 pt-5 px-5">
+        <img class="img-fluid img-1" src="../../assets/images/Image1Bureau.jpg" alt="Image d'une route">
+    </div>
+</div>
+</section>
+
+<section class="container">
+<div class="d-flex justify-content-center">
+    <!--Image 2-->
+<div class="col-6 mt-3 pt-5 px-5">
+        <img class="img-fluid img-1" src="../../assets/images/Image2Bureau.jpg" alt="Image d'une route la nuit">
+    </div>
+    <!--Texte-->
+    <div class="col-6 my-5 py-5 px-5 text-center">
+    <p>
+    Nec vox accusatoris ulla licet subditicii in his malorum quaerebatur acervis ut saltem specie tenus crimina 
+    praescriptis legum committerentur, quod aliquotiens fecere principes saevi: sed quicquid Caesaris implacabilitati 
+    sedisset, id velut fas iusque perpensum confestim urgebatur impleri.
+    </p>
+    </div>
+</div>
+</section>

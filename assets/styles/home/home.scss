@@ -1,3 +1,4 @@
+//Image banderole
 .hero-scene {
     position: relative;
   }
@@ -24,3 +25,22 @@
     justify-content: center;
   }
   
+//Image 1
+.img-1 {
+  width: 100%; 
+  max-width: 671px; 
+  height: 246px;
+  object-fit: cover; 
+  object-position: 50% 80%; 
+  border-radius: 15px; 
+} 
+
+//Image 2
+.img-2 {
+  width: 100%; 
+  max-width: 671px; 
+  height: 246px;
+  object-fit: cover; 
+  object-position: 50% 80%; 
+  border-radius: 15px; 
+} 

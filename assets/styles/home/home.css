@@ -25,4 +25,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.img-1 {
+  width: 100%;
+  max-width: 671px;
+  height: 246px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: 50% 80%;
+     object-position: 50% 80%;
+  border-radius: 15px;
+}
+
+.img-2 {
+  width: 100%;
+  max-width: 671px;
+  height: 246px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: 50% 80%;
+     object-position: 50% 80%;
+  border-radius: 15px;
 }/*# sourceMappingURL=home.css.map */
