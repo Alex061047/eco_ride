@@ -1,0 +1,54 @@
+@import url(../app.css);
+
+//Image banderole
+.hero-scene {
+    position: relative;
+  }
+  .hero-scene::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(../../images/Covoiturage.jpg);
+    background-position: 50% 65%;
+    background-size: cover;
+  }
+  .hero-scene * {
+    position: relative;
+  }
+  .hero-scene .hero-scene-content {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(209, 206, 5, 0.2);
+  }
+
+  .card{
+    background-color: var(--secondary-color) !important;
+  }
+
+  .profil
+  {
+    max-width: 50%;;
+    height: auto;
+  }
+
+  .star{
+    color: var(--star-color) !important;
+  }
+
+  p{
+    font-size: 125%;
+  }
+
+  .ast{
+    font-size: 100%;
+  }
+
+  .filtre{
+    font-size: 100%;
+  }
