@@ -130,7 +130,7 @@
                         </div>
 
                         <div class="d-flex col-1 align-items-center">
-                    <button class="btn btn-primary mt-4">Détail</button>
+                    <button class="btn btn-success mt-4">Détail</button>
                         </div>
                     
 

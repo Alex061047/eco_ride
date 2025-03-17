@@ -4,7 +4,8 @@ import Route from "./Route.js";
 //Définition des routes
 export const allRoutes = [
     new Route("/", "Accueil", "../Vue/home/accueil.php", []),
-    new Route("/covoiturage", "Covoiturage", "../Vue/covoit/covoit.php", []),
+    new Route("/Covoiturage", "Covoiturage", "../Vue/covoit/covoit.php", []),
+    new Route("/EspaceUtilisateur", "Espace Utilisateur", "../Vue/user/userSpace.php", []),
     new Route("404", "Page introuvable", "../Vue/404.html", []),
 ];
 
