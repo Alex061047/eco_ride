@@ -47,37 +47,49 @@
         
         <!--Filtres-->
 
-        <div class="row text-center filtre">
+        <div class="d-flex align-items-center gap-3 filtre">
+        <div>
+            <h5 class="fw-light"><u>Filtres :</u></h5>
+        </div>
 
-            <div class="col-2">
-             <h5 class="fw-light"><u>Filtres:</u></h5>
-            </div>
-
-            <div class="col-2">
-            <label for="mention">Mention écologique</label>
+        <div class="d-flex align-items-center">
+            <label for="mention" class="me-1">Mention écologique</label>
             <input type="checkbox" id="mention" name="mention"/>
-            </div>
+        </div>
 
-            <div class="col-1">
-            <label for="prix">Prix maximum</label>
-            <input type="checkbox" id="prix" name="prix"/>
-            </div>
+        <div class="d-flex align-items-center">
+            <label for="prix" class="me-1">Prix maximum</label>
+            <input type="number" id="prix" name="prix" class="form-control" style="width: 80px;"/>
+        </div>
 
-            <div class="col-3">
-            <label for="prix">Prix maximum</label>
-            <input type="checkbox" id="prix" name="prix"/>
-            <p>Durée maximum</p>
-            </div>
+        <div class="d-flex align-items-center">
+            <label for="duree" class="me-1">Durée maximum</label>
+            <input type="time" id="duree" name="duree" class="form-control" style="width: 120px;"/>
+        </div>
 
-            <div class="col-2">
-            <p>Animaux acceptés</p>
-            </div>
+        <div class="d-flex align-items-center text-nowrap">
+            <label for="animaux" class="me-1">Animaux acceptés</label>
+            <select id="animaux" class="form-select">
+                <option value=""></option>
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
+            </select>
+        </div>
 
-            <div class="col-2">
-            <p>Note minimum</p>
-            </div>
+        <div class="d-flex align-items-center text-nowrap">
+            <label for="note" class="me-1">Note minimum</label>
+            <select id="note" class="form-select">
+                <option value=""></option>
+                <option value="1">1/5</option>
+                <option value="2">2/5</option>
+                <option value="3">3/5</option>
+                <option value="4">4/5</option>
+                <option value="5">5/5</option>
+            </select>
+        </div>
 
         </div>
+   
 
         <!-- Liste des covoiturages -->
         <div class="row mt-2 justify-content-center">
@@ -134,3 +146,5 @@
 
     </div>
 </section>
+
+<script src="../../Controleur/covoit/covoit.js"></script>

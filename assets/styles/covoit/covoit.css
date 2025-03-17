@@ -50,5 +50,35 @@ p {
 }
 
 .filtre {
-  font-size: 100%;
+  font-size: 80%;
+}
+
+#mention {
+  accent-color: var(--secondary-color) !important;
+}
+
+#prix {
+  width: 30%;
+  height: 75%;
+  background-color: var(--secondary-color) !important;
+}
+
+#duree {
+  width: 25%;
+  height: 75%;
+  background-color: var(--secondary-color) !important;
+}
+
+#animaux {
+  width: 50%;
+  height: 75%;
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+}
+
+#note {
+  width: 50%;
+  height: 75%;
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
 }/*# sourceMappingURL=covoit.css.map */
