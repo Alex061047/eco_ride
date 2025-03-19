@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../../assets/styles/userSpace/userSpace.css">
+<link rel="stylesheet" href="../../assets/styles/user/userSpace/userSpace.css">
    
 <header>
 <div class="hero-scene text-center text-black">
@@ -79,7 +79,7 @@
 
         <!-- Bouton Voir mes trajets -->
         <div class="d-flex justify-content-center mt-4">
-            <button class="btn btn-success">Voir mes trajets</button>
+            <a class="btn btn-success" href="/Trajets" role="button">Voir mes trajets</a>
         </div>
     </div>
 

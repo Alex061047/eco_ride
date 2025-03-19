@@ -1,0 +1,38 @@
+@import url(../../app.css);
+.hero-scene {
+  position: relative;
+}
+
+.hero-scene::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../../../images/UserSpace.jpg);
+  background-position: 50% 50%;
+  background-size: cover;
+  filter: brightness(0.9);
+}
+
+.hero-scene * {
+  position: relative;
+}
+
+.hero-scene .hero-scene-content {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background-color: var(--secondary-color) !important;
+}
+
+.bg-success {
+  background-color: #1C6F21 !important;
+  color: white !important; /* Pour que le texte soit visible */
+}/*# sourceMappingURL=userSpace.css.map */
