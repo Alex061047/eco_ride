@@ -1,8 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
-    fetch("./get_trajets.php")
+    fetch("../../Modele/CRUD_trajets/get_trajets.php")
         .then(response => response.json())
         .then(data => {
+            console.log("Données reçues :", data); // Vérifier les données en console
             const trajetsContainer = document.getElementById("trajets-en-cours");
+
+            if (!trajetsContainer) {
+                console.error("L'élément #trajets-en-cours n'existe pas !");
+                return;
+            }
+
             if (data.length > 0) {
                 trajetsContainer.innerHTML = "";
                 data.forEach(trajet => {

@@ -35,6 +35,7 @@
     </div>
 </footer>
 
+
 <!--Intégration du Routeur-->
 <script type="module" src="./Controleur/Router/router.js"></script>
 

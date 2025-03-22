@@ -30,7 +30,9 @@
             <!-- Onglet Mes trajets en cours -->
             <div class="tab-pane fade show active" id="en-cours" role="tabpanel">
                 <h4>Mes trajets en cours</h4>
+                <div id="trajets-en-cours" class="mt-3">
                 <div class="alert alert-info">Aucun trajet en cours.</div>
+                </div>
             </div>
 
             <!-- Onglet Mes futurs trajets -->
@@ -73,6 +75,5 @@
             </div>
         </div>
     </div>
+    
 </section>
-
-<script src="../../Controleur/CRUD_trajets/get_trajets.js"> </script>

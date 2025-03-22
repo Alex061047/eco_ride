@@ -32,13 +32,17 @@ const LoadContentPage = async () => {
   // Ajout du contenu HTML à l'élément avec l'ID "main-page"
   document.getElementById("main-page").innerHTML = html;
 
+// Suppression des anciens scripts de la page précédente
+document.querySelectorAll("script.dynamic-script").forEach(script => script.remove());
+
   // Ajout du contenu JavaScript
   if (actualRoute.pathJS != "") {
     // Création d'une balise script
     var scriptTag = document.createElement("script");
     scriptTag.setAttribute("type", "text/javascript");
     scriptTag.setAttribute("src", actualRoute.pathJS);
-
+    scriptTag.classList.add("dynamic-script");
+    
     // Ajout de la balise script au corps du document
     document.querySelector("body").appendChild(scriptTag);
   }
