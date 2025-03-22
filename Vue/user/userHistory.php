@@ -39,33 +39,33 @@
             <div class="tab-pane fade" id="futurs" role="tabpanel">
                 <h4>Proposer un trajet</h4>
                 <form>
-                    <div class="mb-3">
-                        <label for="vehicule" class="form-label">Véhicule</label>
-                        <select class="form-select" id="vehicule">
-                            <option>Sélectionner un véhicule</option>
-                            <option>Renault Clio - Essence</option>
-                            <option>Tesla Model 3 - Électrique</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ville de départ</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ville d’arrivée</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Jour et heure</label>
-                        <input type="datetime-local" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Durée estimée</label>
-                        <input type="time" class="form-control">
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Proposer</button>
+               <div class="mb-3">
+                  <label for="vehicule" class="form-label">Véhicule</label>
+                    <select class="form-select" id="vehicule" name="vehicule">
+                        <option value="">Sélectionner un véhicule</option>
+                        <option value="Renault Clio">Renault Clio - Essence</option>
+                        <option value="Tesla Model 3">Tesla Model 3 - Électrique</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                     <label for="depart" class="form-label">Ville de départ</label>
+                     <input type="text" class="form-control" id="depart" name="depart">
+                </div>
+                <div class="mb-3">
+                    <label for="arrivee" class="form-label">Ville d’arrivée</label>
+                    <input type="text" class="form-control" id="arrivee" name="arrivee">
+               </div>
+              <div class="mb-3">
+                      <label for="datetime" class="form-label">Jour et heure</label>
+                      <input type="datetime-local" class="form-control" id="datetime" name="datetime">
+               </div>
+                 <div class="mb-3">
+                    <label for="duree" class="form-label">Durée estimée</label>
+                     <input type="time" class="form-control" id="duree" name="duree">
+                 </div>
+                      <button type="submit" class="btn btn-success">Proposer</button>
                 </form>
+
             </div>
 
             <!-- Onglet Historique -->
@@ -77,3 +77,4 @@
     </div>
     
 </section>
+
