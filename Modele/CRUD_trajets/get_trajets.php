@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 session_start();
 
 // Simuler une connexion pour tester
-$_SESSION['user_id'] = 5;
+$_SESSION['user_id'] = 2;
 
 $user_id = $_SESSION['user_id'];
 
