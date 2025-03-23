@@ -39,3 +39,29 @@
     border-color: var(--secondary-color) !important;
     color: black !important;
 }
+
+// Cartes des trajets
+.card {
+  border: var(--primary-color);
+  background-color: var(--secondary-color) !important;
+}
+
+// Icônes
+.bi-geo-alt-fill {
+  color: var(--vert-color);
+}
+.bi-flag-fill {
+  color: var(--star-color);
+}
+.bi-x-circle {
+  color: white;
+}
+
+// Bouton Annuler
+.annuler-trajet {
+  width: 150px;
+  transition: 0.3s;
+}
+.annuler-trajet:hover {
+  background-color: darkred !important;
+}

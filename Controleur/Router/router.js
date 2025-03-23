@@ -36,16 +36,16 @@ const LoadContentPage = async () => {
 document.querySelectorAll("script.dynamic-script").forEach(script => script.remove());
 
   // Ajout du contenu JavaScript
-  if (actualRoute.pathJS != "") {
+  actualRoute.pathJS.forEach(jsFile => {
     // Création d'une balise script
     var scriptTag = document.createElement("script");
     scriptTag.setAttribute("type", "text/javascript");
-    scriptTag.setAttribute("src", actualRoute.pathJS);
+    scriptTag.setAttribute("src", jsFile);
     scriptTag.classList.add("dynamic-script");
     
     // Ajout de la balise script au corps du document
     document.querySelector("body").appendChild(scriptTag);
-  }
+  });
 
   // Changement du titre de la page
   document.title = actualRoute.title + " - " + websiteName;

@@ -69,9 +69,11 @@
             </div>
 
             <!-- Onglet Historique -->
-            <div class="tab-pane fade" id="historique" role="tabpanel">
+             <div class="tab-pane fade" id="historique" role="tabpanel">
                 <h4>Historique des trajets</h4>
+                <div id="historique-trajets" class="mt-3">
                 <div class="alert alert-info">Aucun trajet effectué.</div>
+                </div>
             </div>
         </div>
     </div>

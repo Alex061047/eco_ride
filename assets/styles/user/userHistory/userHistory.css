@@ -38,4 +38,30 @@
   background-color: var(--beige-color) !important;
   border-color: var(--secondary-color) !important;
   color: black !important;
+}
+
+.card {
+  border: var(--primary-color);
+  background-color: var(--secondary-color) !important;
+}
+
+.bi-geo-alt-fill {
+  color: var(--vert-color);
+}
+
+.bi-flag-fill {
+  color: var(--star-color);
+}
+
+.bi-x-circle {
+  color: white;
+}
+
+.annuler-trajet {
+  width: 150px;
+  transition: 0.3s;
+}
+
+.annuler-trajet:hover {
+  background-color: darkred !important;
 }/*# sourceMappingURL=userHistory.css.map */
