@@ -54,4 +54,26 @@ if ($nouvelEtat === "annulé") {
 }
 
 echo json_encode(["success" => true, "message" => "Trajet mis à jour avec succès"]);
+
+//Envoi mail après annulation chauffeur
+require '../mailer/sendMail.php';
+
+// Récupérer les passagers du trajet annulé
+$sqlPassagers = "SELECT u.email FROM utilisateurs u 
+                 JOIN reservations r ON u.id = r.passager_id 
+                 WHERE r.covoiturage_id = :trajet_id";
+$stmtPassagers = $pdo->prepare($sqlPassagers);
+$stmtPassagers->execute(['trajet_id' => $trajetId]);
+$passagers = $stmtPassagers->fetchAll(PDO::FETCH_ASSOC);
+
+// Envoyer un mail aux passagers
+foreach ($passagers as $passager) {
+    $email = $passager['email'];
+    $sujet = "Annulation de votre trajet EcoRide";
+    $message = "<p>Bonjour,<br><br>Votre trajet a été annulé par le chauffeur.<br>
+                 Nous nous excusons pour la gêne occasionnée.<br><br>
+                 L'équipe EcoRide</p>";
+    sendMail($email, $sujet, $message);
+}
+
 ?>
