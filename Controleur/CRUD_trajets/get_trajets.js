@@ -67,8 +67,37 @@ fetch("../../Modele/CRUD_trajets/get_trajets.php")
         } else {
             trajetsContainer.innerHTML = "<div class='alert alert-warning'>Aucun trajet en cours.</div>";
         }
-    })
-    .catch(error => console.error("Erreur lors du chargement des trajets :", error));
+    
+    
+
+    //Événements pour les boutons "Annuler"
+document.querySelectorAll(".annuler-trajet").forEach(button => {
+    button.addEventListener("click", function () {
+        const trajetId = this.getAttribute("data-id");
+        annulerTrajet(trajetId);
+    });
+});
+})
+.catch(error => console.error("Erreur lors du chargement des trajets :", error));
+
+//Fonction pour annuler un trajet
+function annulerTrajet(trajetId) {
+    if (confirm("Voulez-vous vraiment annuler ce trajet ?")) {
+        fetch("../../Modele/CRUD_trajets/update_trajet.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: trajetId, etat: "annulé" })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+
+            //Supprimer dynamiquement le trajet annulé de l'affichage
+            document.querySelector(`.trajet-card[data-id="${trajetId}"]`).remove();
+        })
+        .catch(error => console.error("Erreur lors de l'annulation du trajet :", error));
+    }
+}
 
 //Fonction pour mettre à jour l'état du trajet
 function mettreAJourEtatTrajet(trajetId, nouvelEtat) {

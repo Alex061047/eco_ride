@@ -1,5 +1,7 @@
 <?php
 include '../db_connection.php';
+require '../mailer/sendMail.php';
+
 header('Content-Type: application/json');
 session_start();
 
@@ -51,29 +53,36 @@ if ($nouvelEtat === "annulé") {
     $sqlUpdateReservations = "UPDATE reservations SET statut = 'annulé' WHERE covoiturage_id = :trajet_id";
     $stmtUpdateReservations = $pdo->prepare($sqlUpdateReservations);
     $stmtUpdateReservations->execute(['trajet_id' => $trajetId]);
-}
+};
 
-echo json_encode(["success" => true, "message" => "Trajet mis à jour avec succès"]);
+
 
 //Envoi mail après annulation chauffeur
-require '../mailer/sendMail.php';
 
-// Récupérer les passagers du trajet annulé
-$sqlPassagers = "SELECT u.email FROM utilisateurs u 
-                 JOIN reservations r ON u.id = r.passager_id 
-                 WHERE r.covoiturage_id = :trajet_id";
-$stmtPassagers = $pdo->prepare($sqlPassagers);
-$stmtPassagers->execute(['trajet_id' => $trajetId]);
-$passagers = $stmtPassagers->fetchAll(PDO::FETCH_ASSOC);
+if ($nouvelEtat === "annulé") {
+    // Mettre à jour les réservations
+    $sql = "UPDATE reservations SET statut = 'annulé' WHERE covoiturage_id = :trajet_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['trajet_id' => $trajetId]);
 
-// Envoyer un mail aux passagers
-foreach ($passagers as $passager) {
-    $email = $passager['email'];
-    $sujet = "Annulation de votre trajet EcoRide";
-    $message = "<p>Bonjour,<br><br>Votre trajet a été annulé par le chauffeur.<br>
-                 Nous nous excusons pour la gêne occasionnée.<br><br>
-                 L'équipe EcoRide</p>";
-    sendMail($email, $sujet, $message);
+    // Récupérer les emails des passagers
+    $sqlPassagers = "SELECT u.email FROM utilisateurs u 
+                     JOIN reservations r ON u.id = r.passager_id 
+                     WHERE r.covoiturage_id = :trajet_id";
+    $stmtPassagers = $pdo->prepare($sqlPassagers);
+    $stmtPassagers->execute(['trajet_id' => $trajetId]);
+    $passagers = $stmtPassagers->fetchAll(PDO::FETCH_ASSOC);
+
+    // Envoyer un mail aux passagers
+    foreach ($passagers as $passager) {
+        $email = $passager['email'];
+        $sujet = "Annulation de votre trajet EcoRide";
+        $message = "<p>Bonjour,<br><br>Votre trajet a été annulé par le chauffeur.<br>
+                     Nous nous excusons pour la gêne occasionnée.<br><br>
+                     L'équipe EcoRide</p>";
+        sendMail($email, $sujet, $message);
+    }
 }
 
+echo json_encode(["success" => true, "message" => "Mise à jour effectuée avec succès"]);
 ?>
