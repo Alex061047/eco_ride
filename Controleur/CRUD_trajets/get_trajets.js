@@ -5,7 +5,8 @@ fetch("../../Modele/CRUD_trajets/get_trajets.php")
         trajetsContainer.innerHTML = "";
 
         //Ne garder que les trajets "en cours" ou "à venir"
-        let trajetsEnCours = data.filter(trajet => trajet.etat !== "terminé");
+        let trajetsEnCours = data.filter(trajet => trajet.etat !== "terminé" && trajet.etat !== "annulé");
+
 
         if (trajetsEnCours.length > 0) {
             trajetsEnCours.forEach(trajet => {
