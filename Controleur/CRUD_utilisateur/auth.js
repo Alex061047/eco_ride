@@ -7,6 +7,7 @@ function attachFormHandler() {
     const toggleButton = document.getElementById('toggle-button'); // Le bouton pour basculer entre inscription et connexion
     const formTitle = document.getElementById('form-title'); 
     const pseudoField = document.getElementById('pseudo-field'); // Le champ pseudo (visible uniquement en inscription)
+    const roleField = document.getElementById('role-field'); // Le champ rôle (visible uniquement en inscription)
     const submitButton = document.getElementById('submit-button'); // Le bouton de soumission
     const messageDiv = document.getElementById('message'); // Affichage du succès ou de l'echec
 
@@ -23,6 +24,7 @@ function attachFormHandler() {
             mode = "inscription"; // On change le mode
             formTitle.textContent = "Inscription"; 
             pseudoField.style.display = "block"; // Le champ pseudo devient visible
+            roleField.style.display = "block"; // Le champ rôle devient visible
             toggleButton.textContent = "Déjà un compte ? Connectez-vous"; 
             submitButton.textContent = "S'inscrire"; 
         } else {
@@ -30,6 +32,7 @@ function attachFormHandler() {
             mode = "connexion"; // On change le mode
             formTitle.textContent = "Connexion"; 
             pseudoField.style.display = "none"; // Le champ pseudo est masqué
+            roleField.style.display = "none"; // Le champ rôle est masqué
             toggleButton.textContent = "Pas encore de compte ? Inscrivez-vous"; 
             submitButton.textContent = "Se connecter";
         }
@@ -58,16 +61,24 @@ function attachFormHandler() {
                 // Changement de couleur selon le statut (succès ou erreur)
                 messageDiv.style.color = data.status === "success" ? "green" : "red";
 
-                // Si la connexion réussit, on effectue une redirection (stockage du token à rajouter plus tard)
+                // Si la connexion réussit, on effectue une redirection
                 if (data.status === "success") {
-                    window.location.href = "/EspaceUtilisateur"; // Redirection vers Mon Espace
+                // Stockage d'un "token" temporaire dans sessionStorage (ici un simple flag, ou un identifiant si tu veux)
+                 sessionStorage.setItem("isLoggedIn", "true");
+                 sessionStorage.setItem("user", JSON.stringify(data.utilisateur)); // Stockage des infos de l'utilisateur
+                 // Enregistrement des informations utilisateurs
+                 sessionStorage.setItem("userId", data.utilisateur.id);
+                 sessionStorage.setItem("userPseudo", data.utilisateur.pseudo);
+                 sessionStorage.setItem("userRole", data.utilisateur.role);
+                 
+                 window.location.href = "/EspaceUtilisateur"; // Redirection vers Mon Espace
                 }
             })
             .catch(err => console.error(err)); 
         } else {
             // Si on est en mode "inscription"
-            const pseudo = form.querySelector('[name="pseudo"]').value;
-            const role = "passager"; // Rôle par défaut
+            const pseudo = form.querySelector('[name="pseudo"]').value; // Récupère le pseudo
+            const role = form.querySelector('[name="role"]').value; // Récupère le rôle choisi
 
             // Envoi de la requête pour l'inscription
             fetch('../../Modele/CRUD_utilisateur/inscription.php', {
@@ -89,6 +100,7 @@ function attachFormHandler() {
                     mode = "connexion"; // On repasse en mode connexion
                     formTitle.textContent = "Connexion"; 
                     pseudoField.style.display = "none"; // On cache à nouveau le champ pseudo
+                    roleField.style.display = "none"; // On cache à nouveau le champ rôle
                     toggleButton.textContent = "Pas encore de compte ? Inscrivez-vous"; 
                     submitButton.textContent = "Se connecter"; 
                 }

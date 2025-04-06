@@ -14,8 +14,8 @@ if (!empty($data["email"]) && !empty($data["mot_de_passe"])) {
     $email = $data["email"];
     $mot_de_passe = $data["mot_de_passe"];
 
-    // Prépare la requête SQL pour sélectionner l'id et le mot de passe de l'utilisateur en fonction de l'email
-    $stmt = $pdo->prepare("SELECT id, mot_de_passe FROM utilisateurs WHERE email = ?");
+    // Prépare la requête SQL pour sélectionner les informations de l'utilisateur en fonction de l'email
+    $stmt = $pdo->prepare("SELECT id, pseudo, role, mot_de_passe FROM utilisateurs WHERE email = ?");
     // Exécute la requête en passant l'email comme paramètre
     $stmt->execute([$email]);
     
@@ -25,7 +25,14 @@ if (!empty($data["email"]) && !empty($data["mot_de_passe"])) {
     // Vérifie si un utilisateur est trouvé et si le mot de passe correspond
     if ($user && password_verify($mot_de_passe, $user["mot_de_passe"])) {
         // Si l'authentification réussit, retourne un message de succès au format JSON
-        echo json_encode(["status" => "success", "message" => "Connexion réussie."]);
+        echo json_encode(["status" => "success",
+        "message" => "Connexion réussie.",
+        "utilisateur" => [
+             "id" => $user["id"], 
+             "pseudo" => $user["pseudo"],
+             "role" => $user["role"]
+    ]]);
+
     } else {
         // Si l'email ou le mot de passe est incorrect, retourne un message d'erreur au format JSON
         echo json_encode(["status" => "error", "message" => "Email ou mot de passe incorrect."]);
