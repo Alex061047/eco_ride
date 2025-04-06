@@ -44,7 +44,7 @@
                             data-credit='" . htmlspecialchars($user['credit']) . "'>
                              Modifier
                         </button>
-                        <button class='delete-btn' data-id='" . htmlspecialchars($user['id']) . "'>🗑️ Supprimer</button>
+                        <button class='delete-btn' data-id='" . htmlspecialchars($user['id']) . "'>Supprimer</button>
                     </td>
                 </tr>";
             }
@@ -81,6 +81,6 @@
         </form>
     </div>
 
-    <script src="../../Controleur/liste_utilisateurs.js"></script>
+    <script src="../../Controleur/CRUD_utilisateur/liste_utilisateurs.js"></script>
 </body>
 </html>
