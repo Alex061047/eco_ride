@@ -1,32 +1,61 @@
 <?php
+// Connexion à la base de données + MongoDB pour enregistrer les logs
 include '../db_connection.php';
 include '../mongodb/mongo_logs.php';
 
+// Vérifie que la requête est de type POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Récupérer les données JSON envoyées
+    // Récupération des données envoyées en JSON
     $data = json_decode(file_get_contents("php://input"), true);
 
+     // Vérifie que l'ID utilisateur est bien fourni
     if (!isset($data['id'])) {
         echo json_encode(["status" => "error", "message" => "ID utilisateur manquant."]);
         exit;
     }
 
-    $sql = "UPDATE utilisateurs SET pseudo = :pseudo, email = :email, role = :role, credit = :credit WHERE id = :id";
+    // Prépare les champs à mettre à jour dynamiquement
+    $fields = [];
+    $params = [':id' => $data['id']];
+
+    // Mise à jour du pseudo si présent
+    if (!empty($data['pseudo'])) {
+        $fields[] = "pseudo = :pseudo";
+        $params[':pseudo'] = $data['pseudo'];
+    }
+
+    // Mise à jour de l'email si présent
+    if (!empty($data['email'])) {
+        $fields[] = "email = :email";
+        $params[':email'] = $data['email'];
+    }
+
+    // Mise à jour du rôle si présent
+    if (!empty($data['role'])) {
+        $fields[] = "role = :role";
+        $params[':role'] = $data['role'];
+    }
+
+    // Mise à jour du mot de passe (haché avec Bcrypt) si présent
+    if (!empty($data['mot_de_passe'])) {
+        $fields[] = "mot_de_passe = :mot_de_passe";
+        $params[':mot_de_passe'] = password_hash($data['mot_de_passe'], PASSWORD_BCRYPT);
+    }
+
+    // Si aucun champ n’est à mettre à jour, on arrête ici
+    if (empty($fields)) {
+        echo json_encode(["status" => "error", "message" => "Aucune donnée à mettre à jour."]);
+        exit;
+    }
+
+    // Construction de la requête SQL avec uniquement les champs à mettre à jour
+    $sql = "UPDATE utilisateurs SET " . implode(", ", $fields) . " WHERE id = :id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':id' => $data['id'],
-        ':pseudo' => $data['pseudo'],
-        ':email' => $data['email'],
-        ':role' => $data['role'],
-        ':credit' => $data['credit']
-    ]);
+    $stmt->execute($params);
 
-    echo json_encode(["status" => "success", "message" => "Utilisateur mis à jour !"]);
-
-    // Enregistrement modification dans le log MongoDB
+    // Enregistrement du log dans MongoDB
     enregistrerLog("Modification utilisateur", "Utilisateur modifié : ID " . $data['id']);
-} else {
-    echo json_encode(["status" => "error", "message" => "Requête invalide"]);
+    // Réponse de succès au format JSON
+    echo json_encode(["status" => "success", "message" => "Utilisateur mis à jour avec succès."]);
 }
-
 ?>

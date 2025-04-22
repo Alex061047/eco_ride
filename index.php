@@ -45,5 +45,6 @@
 
 <!--Gestion barre de navigation-->
 <script src="./Controleur/navbar/navbar.js"></script>
-    
+
+
 </html>

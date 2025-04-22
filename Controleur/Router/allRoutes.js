@@ -5,7 +5,7 @@ import Route from "./Route.js";
 export const allRoutes = [
     new Route("/", "Accueil", "../Vue/home/accueil.php", []),
     new Route("/Covoiturage", "Covoiturage", "../Vue/covoit/covoit.php", []),
-    new Route("/EspaceUtilisateur", "Espace Utilisateur", "../Vue/user/userSpace.php", []),
+    new Route("/EspaceUtilisateur", "Espace Utilisateur", "../Vue/user/userSpace.php", [], ["../../Controleur/CRUD_utilisateur/userSpace.js"]),
     new Route("/Trajets", "Historique des trajets", "../Vue/user/userHistory.php", [],
         ["../../Controleur/CRUD_trajets/get_trajets.js", "../../Controleur/CRUD_trajets/historique.js"]),
     new Route("/Connexion", "Connexion/Inscription", "../Vue/connexion/connexion.php", [], ["../../Controleur/CRUD_utilisateur/auth.js"]),

@@ -24,7 +24,10 @@ if (!empty($data["email"]) && !empty($data["mot_de_passe"])) {
 
     // Vérifie si un utilisateur est trouvé et si le mot de passe correspond
     if ($user && password_verify($mot_de_passe, $user["mot_de_passe"])) {
-        // Si l'authentification réussit, retourne un message de succès au format JSON
+        session_start(); 
+        $_SESSION['user_id'] = $user["id"]; // On stocke l'ID de l'utilisateur connecté
+
+    // Si l'authentification réussit, retourne un message de succès au format JSON
         echo json_encode(["status" => "success",
         "message" => "Connexion réussie.",
         "utilisateur" => [
