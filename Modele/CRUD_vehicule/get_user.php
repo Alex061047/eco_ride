@@ -16,10 +16,10 @@ if (isset($_SESSION['user_id'])) {
 
     if ($user) {
         // Récupération des infos véhicule
-        $vehiculeQuery = "SELECT * FROM vehicules WHERE utilisateur_id = :user_id LIMIT 1";
+        $vehiculeQuery = "SELECT * FROM vehicules WHERE utilisateur_id = :user_id";
         $vehiculeStmt = $pdo->prepare($vehiculeQuery);
         $vehiculeStmt->execute(['user_id' => $user_id]);
-        $vehicule = $vehiculeStmt->fetch(PDO::FETCH_ASSOC);
+        $vehicules = $vehiculeStmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Préférences
         $prefQuery = "SELECT * FROM preferences WHERE utilisateur_id = :user_id LIMIT 1";
@@ -31,7 +31,7 @@ if (isset($_SESSION['user_id'])) {
         echo json_encode([
             'status' => 'success',
             'user' => $user,
-            'vehicule' => $vehicule ? $vehicule : null,
+            'vehicules' => $vehicules,
             'preferences' => $preferences ? $preferences : null
         ]);        
     } 

@@ -23,6 +23,10 @@
   background-color: var(--primary-color) !important;
 }
 
+.btn-star {
+  background-color: var(--star-color) !important;
+}
+
 html, body {
   height: 100%;
   display: flex;

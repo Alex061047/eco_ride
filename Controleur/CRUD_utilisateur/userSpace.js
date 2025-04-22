@@ -1,13 +1,14 @@
-// Récupération des informations utilisateur et véhicule
+// Variables globales pour la gestion des véhicules
+let vehiculeList = [];
+let currentVehiculeIndex = 0;
+
+// Récupération des informations utilisateur et véhicules
 fetch("../../Modele/CRUD_vehicule/get_user.php")
     .then(response => response.json())
     .then(data => {
         if (data.status === "success") {
             const user = data.user;
-            const vehicule = data.vehicule;
             const preferences = data.preferences || {};
-
-            
 
             // Affichage des infos utilisateur
             document.getElementById("user-firstname").textContent = user.pseudo;
@@ -15,41 +16,40 @@ fetch("../../Modele/CRUD_vehicule/get_user.php")
             document.getElementById("user-role").textContent = user.role;
             document.getElementById("user-credits").textContent = user.credit;
 
-            // Affichage conditionnel de la section véhicule si le rôle est chauffeur ou passager-chauffeur
             const vehicleSection = document.getElementById("vehicle-card");
+
+            // Si l'utilisateur n'est pas chauffeur, on cache
             if (user.role !== "chauffeur" && user.role !== "passager-chauffeur") {
                 vehicleSection.style.display = "none";
-            } else if (vehicule) {
-                // Affichage des données véhicule
-                document.getElementById("vehicle-plate").textContent = vehicule.immatriculation;
-                document.getElementById("vehicle-energy").textContent = vehicule.energie;
-                document.getElementById("vehicle-model").textContent = vehicule.modele;
-                document.getElementById("vehicle-color").textContent = vehicule.couleur;
-                document.getElementById("vehicle-brand").textContent = vehicule.marque;
-                document.getElementById("vehicle-seats").textContent = vehicule.nb_places;
-                document.getElementById("vehicle-date").textContent = vehicule.date_immatriculation ? formatDateFR(vehicule.date_immatriculation) : "";
-
-
-                   // Affichage des préférences (transforme les booléens en Oui/Non)
-                  const boolToText = (val) => {
-                    if (val === null || val === undefined) return "Non renseigné";
-                    return val == 1 ? "Oui" : "Non";
-                };
-                
-                document.getElementById("vehicle-pref-fumeur").textContent = boolToText(preferences.fumeur);
-                document.getElementById("vehicle-pref-animaux").textContent = boolToText(preferences.animaux);
-                document.getElementById("vehicle-pref-discussions").textContent = boolToText(preferences.discussions);
-                document.getElementById("vehicle-pref-musique").textContent = boolToText(preferences.musique);
-                document.getElementById("vehicle-pref-autre").textContent = preferences.autre || "Non renseigné";
-                
-                // Stocke l'ID du véhicule pour les actions futures
-                sessionStorage.setItem("vehiculeId", vehicule.id); // à ajouter dans ton fetch get_user.php si vehicule existe
-
+                return;
             }
-            // Message si aucun véhicule n’est enregistré 
-            else {
-                vehicleSection.innerHTML += '<div class="alert alert-warning mt-3">Aucun véhicule enregistré.</div>';
-            }
+
+            // On stocke les véhicules
+            vehiculeList = Array.isArray(data.vehicules) ? data.vehicules : [];
+
+if (vehiculeList.length > 1) {
+    document.getElementById("vehicule-next-btn").style.display = "inline-block";
+}
+
+if (vehiculeList.length > 0) {
+    afficherVehicule(0);
+} else {
+    document.getElementById("vehicle-card").innerHTML += `
+        <div class="alert alert-warning mt-3">Aucun véhicule enregistré.</div>`;
+}
+
+
+            // Préférences utilisateur (non liées à un véhicule)
+            const boolToText = (val) => {
+                if (val === null || val === undefined) return "Non renseigné";
+                return val == 1 ? "Oui" : "Non";
+            };
+
+            document.getElementById("vehicle-pref-fumeur").textContent = boolToText(preferences.fumeur);
+            document.getElementById("vehicle-pref-animaux").textContent = boolToText(preferences.animaux);
+            document.getElementById("vehicle-pref-discussions").textContent = boolToText(preferences.discussions);
+            document.getElementById("vehicle-pref-musique").textContent = boolToText(preferences.musique);
+            document.getElementById("vehicle-pref-autre").textContent = preferences.autre || "Non renseigné";
         } else {
             alert(data.message || "Erreur lors du chargement des données utilisateur");
         }
@@ -58,6 +58,7 @@ fetch("../../Modele/CRUD_vehicule/get_user.php")
         console.error("Erreur lors de la récupération des données :", error);
     });
 
+
     // Fonction pour convertir une date "YYYY-MM-DD" en "DD/MM/YYYY"
 function formatDateFR(dateStr) {
     if (!dateStr || !dateStr.includes("-")) return dateStr; // sécurité
@@ -65,7 +66,23 @@ function formatDateFR(dateStr) {
     return `${day}/${month}/${year}`;
 }
 
+// Fonction pour afficher les véhicules
+function afficherVehicule(index) {
+    const vehicule = vehiculeList[index];
+    if (!vehicule) return;
 
+    document.getElementById("vehicle-plate").textContent = vehicule.immatriculation;
+    document.getElementById("vehicle-energy").textContent = vehicule.energie;
+    document.getElementById("vehicle-model").textContent = vehicule.modele;
+    document.getElementById("vehicle-color").textContent = vehicule.couleur;
+    document.getElementById("vehicle-brand").textContent = vehicule.marque;
+    document.getElementById("vehicle-seats").textContent = vehicule.nb_places;
+    document.getElementById("vehicle-date").textContent = vehicule.date_immatriculation
+        ? formatDateFR(vehicule.date_immatriculation)
+        : "";
+
+    sessionStorage.setItem("vehiculeId", vehicule.id);
+}
 
 // Modification des champs utilisateur
 function editField(field) {
@@ -567,3 +584,12 @@ function deleteVehicle() {
     })
     .catch(err => console.error("Erreur lors de la suppression du véhicule :", err));
 }
+
+
+
+
+// Affichage du bouton Suivant
+document.getElementById("vehicule-next-btn").addEventListener("click", () => {
+    currentVehiculeIndex = (currentVehiculeIndex + 1) % vehiculeList.length;
+    afficherVehicule(currentVehiculeIndex);
+});

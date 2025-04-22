@@ -127,7 +127,12 @@
                 <button class="btn btn-danger btn-sm" onclick="deleteVehicle()">Supprimer ce véhicule</button>
                 <button class="btn btn-primary btn-sm" onclick="addVehicle()">Ajouter un véhicule</button>
             </div>
+            
         </div>
+    </div>
+    <!-- Bouton Vehicule suivant -->
+    <div class="text-end mt-2">
+        <button id="vehicule-next-btn" class="btn btn-star btn-sm" style="display: none;">Suivant</button>
     </div>
 
     <!-- Bouton Voir mes trajets -->

@@ -60,6 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute($params);
 
     // Enregistrement dans les logs MongoDB
+    $action = "Modification préférence";
     enregistrerLog($action, "Préférences modifiées pour utilisateur ID : " . $data["utilisateur_id"]);
 
 
