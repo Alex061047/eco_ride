@@ -16,6 +16,12 @@ fetch("../../Modele/CRUD_vehicule/get_user.php")
             document.getElementById("user-role").textContent = user.role;
             document.getElementById("user-credits").textContent = user.credit;
 
+            // Affichage de la photo de profil
+            if (user.photo_profil) {
+             document.getElementById("profil-photo").src = `../../uploads/photos_utilisateurs/${user.photo_profil}`;
+            }
+
+
             const vehicleSection = document.getElementById("vehicle-card");
 
             // Si l'utilisateur n'est pas chauffeur, on cache
@@ -586,10 +592,40 @@ function deleteVehicle() {
 }
 
 
-
-
 // Affichage du bouton Suivant
 document.getElementById("vehicule-next-btn").addEventListener("click", () => {
     currentVehiculeIndex = (currentVehiculeIndex + 1) % vehiculeList.length;
     afficherVehicule(currentVehiculeIndex);
 });
+
+
+// Gestion de la photo de profil
+function uploadPhoto() {
+    const input = document.getElementById("photo-input");
+    const file = input.files[0];
+    const userId = sessionStorage.getItem("userId");
+
+    if (!file) {
+        alert("Veuillez choisir une image.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("photo", file);
+    formData.append("user_id", userId);
+
+    fetch("../../Modele/CRUD_utilisateur/upload_photo.php", {
+        method: "POST",
+        body: formData,
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            document.getElementById("profil-photo").src = data.newPath + "?t=" + new Date().getTime(); 
+            alert("Photo mise à jour !");
+        } else {
+            alert("Erreur : " + data.message);
+        }
+    })
+    .catch(err => console.error("Erreur envoi photo :", err));
+}

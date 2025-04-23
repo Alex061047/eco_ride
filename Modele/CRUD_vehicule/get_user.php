@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
     // Récupération des infos utilisateur
-    $query = "SELECT id, pseudo, email, role, credit FROM utilisateurs WHERE id = :id";
+    $query = "SELECT id, pseudo, email, photo_profil, role, credit FROM utilisateurs WHERE id = :id";
     $stmt = $pdo->prepare($query);
     $stmt->execute(['id' => $user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);

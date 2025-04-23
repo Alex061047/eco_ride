@@ -16,6 +16,16 @@
         <h5>Crédits : <span class="badge bg-success" id="user-credits">0</span></h5>
     </div>
 
+    <!-- Photo de profil -->
+    <div class="text-center mb-4">
+    <img id="profil-photo" src="../../uploads/photos_utilisateurs/default.jpg" alt="Photo de profil" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+    <div class="mt-2">
+        <input type="file" id="photo-input" accept="image/*" class="form-control form-control-sm" style="max-width: 300px; margin: auto;">
+        <button class="btn btn-primary btn-sm mt-2" onclick="uploadPhoto()">Changer la photo</button>
+    </div>
+</div>
+
+
     <!-- Informations personnelles -->
     <div class="card p-3 mt-3">
         <h4>Informations personnelles</h4>
