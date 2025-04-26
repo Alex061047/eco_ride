@@ -22,6 +22,11 @@ fetch("../../Modele/CRUD_trajets/get_trajets.php")
                     }
                 }
 
+                else if (trajet.est_passager) {
+                    // Affichage passager
+                    buttonHTML += `<button class="btn btn-danger btn-sm annuler-reservation" data-id="${trajet.id}">Annuler ma réservation</button>`;
+                }
+
                 trajetsContainer.innerHTML += `
                     <div class="card mb-3 p-3 shadow-sm border-0 trajet-card" data-id="${trajet.id}">
                         <div class="row align-items-center">
@@ -41,8 +46,8 @@ fetch("../../Modele/CRUD_trajets/get_trajets.php")
                             </div>
 
                             <div class="col-md-4 text-center">
-                                ${buttonHTML}
-                                <button class="btn btn-danger btn-lg annuler-trajet" data-id="${trajet.id}">Annuler</button>
+                            ${buttonHTML}
+                             ${trajet.est_chauffeur ? `<button class="btn btn-danger btn-lg annuler-trajet" data-id="${trajet.id}">Annuler</button>` : ""}
                             </div>
                         </div>
                     </div>
@@ -64,6 +69,15 @@ fetch("../../Modele/CRUD_trajets/get_trajets.php")
                     mettreAJourEtatTrajet(trajetId, "terminé");
                 });
             });
+
+            // Événements pour les boutons "Annuler ma réservation"
+            document.querySelectorAll(".annuler-reservation").forEach(button => {
+                 button.addEventListener("click", function () {
+                     const trajetId = this.getAttribute("data-id");
+                     annulerReservation(trajetId);
+                 });
+            });
+
 
         } else {
             trajetsContainer.innerHTML = "<div class='alert alert-warning'>Aucun trajet en cours.</div>";
@@ -93,7 +107,7 @@ function annulerTrajet(trajetId) {
         .then(data => {
             alert(data.message);
 
-            //Supprimer dynamiquement le trajet annulé de l'affichage
+            //Supprimer le trajet annulé de l'affichage
             document.querySelector(`.trajet-card[data-id="${trajetId}"]`).remove();
         })
         .catch(error => console.error("Erreur lors de l'annulation du trajet :", error));
@@ -112,7 +126,7 @@ function mettreAJourEtatTrajet(trajetId, nouvelEtat) {
         alert(data.message);
 
         if (nouvelEtat === "terminé") {
-            //Supprimer dynamiquement le trajet de l'affichage
+            //Supprimer le trajet de l'affichage
             document.querySelector(`.trajet-card[data-id="${trajetId}"]`).remove();
         }
         location.reload();
@@ -121,3 +135,40 @@ function mettreAJourEtatTrajet(trajetId, nouvelEtat) {
 }
 
 
+// Événement pour le bouton "Annuler ma réservation"
+document.querySelectorAll(".annuler-reservation").forEach(button => {
+    button.addEventListener("click", function () {
+        const trajetId = this.getAttribute("data-id");
+        if (confirm("Voulez-vous vraiment annuler votre réservation ?")) {
+            fetch("../../Modele/CRUD_trajets/annuler_reservation.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ covoiturage_id: trajetId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                document.querySelector(`.trajet-card[data-id="${trajetId}"]`).remove();
+            })
+            .catch(error => console.error("Erreur lors de l'annulation de la réservation :", error));
+        }
+    });
+});
+
+
+// Fonction pour annuler une réservation en tant que passager
+function annulerReservation(trajetId) {
+    if (confirm("Voulez-vous vraiment annuler votre réservation ?")) {
+        fetch("../../Modele/CRUD_trajets/annuler_reservation.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ covoiturage_id: trajetId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            location.reload();
+        })
+        .catch(error => console.error("Erreur lors de l'annulation de la réservation :", error));
+    }
+}
