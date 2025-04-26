@@ -1,3 +1,20 @@
+// On récupére le rôle utilisateur pour gérer l'affichage des onglets
+fetch("../../Modele/CRUD_vehicule/get_user.php")
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            const role = data.user.role;
+            if (role === "passager") {
+                // Masquer l'onglet "Mes futurs trajets" pour les passagers
+                document.getElementById("futurs-tab").style.display = "none";
+            }
+        } else {
+            console.error("Erreur lors de la récupération de l'utilisateur :", data.message);
+        }
+    })
+    .catch(error => console.error("Erreur lors de la récupération de l'utilisateur :", error));
+
+// Gestion des trajets
 fetch("../../Modele/CRUD_trajets/get_trajets.php")
     .then(response => response.json())
     .then(data => {
