@@ -38,13 +38,12 @@
             <!-- Onglet Mes futurs trajets -->
             <div class="tab-pane fade" id="futurs" role="tabpanel">
                 <h4>Proposer un trajet</h4>
-                <form>
+                <form id="form-trajet">
                <div class="mb-3">
                   <label for="vehicule" class="form-label">Véhicule</label>
                     <select class="form-select" id="vehicule" name="vehicule">
                         <option value="">Sélectionner un véhicule</option>
-                        <option value="Renault Clio">Renault Clio - Essence</option>
-                        <option value="Tesla Model 3">Tesla Model 3 - Électrique</option>
+                        <!-- Rajout en JS des options supplémentaires suivant les véhicules de l'utilisateur -->
                     </select>
                 </div>
                 <div class="mb-3">
@@ -63,7 +62,18 @@
                     <label for="duree" class="form-label">Durée estimée</label>
                      <input type="time" class="form-control" id="duree" name="duree">
                  </div>
-                      <button type="submit" class="btn btn-success">Proposer</button>
+                 <div class="mb-3">
+                     <label for="prix" class="form-label">Prix du trajet</label>
+                      <input type="number" class="form-control" id="prix" name="prix" min="2" step="0.1" placeholder="Ex: 5.0">
+                      <div class="form-text text-danger">
+                     <p> Attention : 2 crédits seront reversés à la plateforme. </p>
+                     </div>
+                </div>
+                <div class="mb-3">
+                      <label for="places" class="form-label">Nombre de places disponibles</label>
+                      <input type="number" class="form-control" id="places" name="places" min="1">
+                </div>
+                 <button type="button" id="btn-proposer-trajet" class="btn btn-success">Proposer</button>
                 </form>
 
             </div>

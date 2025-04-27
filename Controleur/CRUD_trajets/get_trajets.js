@@ -189,3 +189,4 @@ function annulerReservation(trajetId) {
         .catch(error => console.error("Erreur lors de l'annulation de la réservation :", error));
     }
 }
+
