@@ -38,7 +38,9 @@
 }
 
 .star {
-  color: var(--star-color) !important;
+  width: 16px;
+  height: 16px;
+  fill: var(--star-color);
 }
 
 p {
@@ -70,13 +72,6 @@ p {
 }
 
 #animaux {
-  width: 50%;
-  height: 75%;
-  background-color: var(--beige-color) !important;
-  border-color: var(--secondary-color) !important;
-}
-
-#note {
   width: 50%;
   height: 75%;
   background-color: var(--beige-color) !important;

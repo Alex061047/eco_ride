@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 $user_id = $_SESSION['user_id'];
 
+// Recupération des covoiturages
+
 $sql = "SELECT c.id, c.depart, c.arrivee, 
                DATE_FORMAT(c.date_heure_depart, '%Y-%m-%d') AS jour, 
                TIME_FORMAT(c.date_heure_depart, '%H:%i') AS heure, 
