@@ -19,6 +19,7 @@ $sql = "SELECT
             c.prix, 
             c.etat,
             c.chauffeur_id,
+            c.vehicule_id,
             u.pseudo, 
             u.photo_profil, 
             u.note,

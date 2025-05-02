@@ -21,7 +21,12 @@ window.addEventListener('DOMContentLoaded', () => {
         logoutLink.addEventListener("click", (e) => {
             e.preventDefault();
             sessionStorage.removeItem("isLoggedIn");
-            window.location.href = "/"; // Redirection vers accueil
+    
+            // Déconnexion serveur
+            fetch("../../Modele/CRUD_utilisateur/logout.php")
+                .then(() => {
+                    window.location.href = "/"; 
+                });
         });
     }
 });

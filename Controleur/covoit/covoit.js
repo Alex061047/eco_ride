@@ -14,6 +14,58 @@ function chargerCovoiturages() {
 }
 
 
+// Appliquer les filtres
+
+function appliquerFiltres() {
+    let covoituragesFiltres = [...covoituragesOriginaux]; // Copie pour ne pas modifier l’original
+
+    const mention = document.getElementById('mention').checked;
+    const prixMax = parseFloat(document.getElementById('prix').value);
+    const dureeMax = document.getElementById('duree').value;
+    const animaux = document.getElementById('animaux').value;
+    const noteMin = parseInt(document.getElementById('note').value);
+
+    // Filtre mention écologique (que les véhicules électriques)
+    if (mention) {
+        covoituragesFiltres = covoituragesFiltres.filter(trajet => trajet.energie === "electrique");
+    }
+
+    // Filtre prix max
+    if (!isNaN(prixMax)) {
+        covoituragesFiltres = covoituragesFiltres.filter(trajet => trajet.prix <= prixMax);
+    }
+
+    // Filtre durée max 
+    if (dureeMax) {
+        const [hMax, mMax] = dureeMax.split(':').map(Number);
+        const dureeMaxMinutes = hMax * 60 + mMax;
+
+        covoituragesFiltres = covoituragesFiltres.filter(trajet => {
+            const [h, m] = trajet.duree.split(':').map(Number);
+            return h * 60 + m <= dureeMaxMinutes;
+        });
+    }
+
+  // Filtre animaux
+if (animaux && animaux !== "null") {
+    covoituragesFiltres = covoituragesFiltres.filter(trajet => {
+        if (animaux === "oui") {
+            return trajet.animaux == 1;
+        } else if (animaux === "non") {
+            return trajet.animaux != 1; 
+        }
+    });
+}
+
+    // Filtre note min
+    if (!isNaN(noteMin)) {
+        covoituragesFiltres = covoituragesFiltres.filter(trajet => trajet.note && trajet.note >= noteMin);
+    }
+
+    afficherCovoiturages(covoituragesFiltres);
+}
+
+
 // Affichage des covoiturages
 function afficherCovoiturages(covoiturages) {
     const container = document.getElementById("liste-covoiturages");
@@ -27,10 +79,12 @@ function afficherCovoiturages(covoiturages) {
     covoiturages.forEach(trajet => {
         if (trajet.nb_places_restantes === 0) return; // On ignore les trajets complets
 
-        const ecologique = (trajet.energie === "électrique") ? "Oui" : "Non";
+        const ecologique = (trajet.energie === "electrique") ? "Oui" : "Non";
+
         const photo = trajet.photo_profil && trajet.photo_profil.trim() !== ''
             ? `../../uploads/photos_utilisateurs/${trajet.photo_profil}`
             : '../../uploads/photos_utilisateurs/default.jpg';
+
         const etoile = genererEtoilesHTML(trajet.note); // Affichage de la note sous forme d’étoiles
 
         const card = document.createElement("div");
@@ -81,11 +135,17 @@ function afficherCovoiturages(covoiturages) {
         container.appendChild(card);
 
          // Chargement des détails chauffeur et préférences
-       chargerDetailsTrajet(trajet.id, trajet.chauffeur_id);
+         chargerDetailsTrajet(trajet.id, trajet.chauffeur_id, trajet.vehicule_id);
 
     });
 
-   
+    // Ajout des événements sur les boutons "Participer"
+    document.querySelectorAll(".participer-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const trajetId = this.getAttribute("data-id");
+            confirmerParticipation(trajetId);
+        });
+    });
 }
 
 
@@ -100,9 +160,9 @@ function genererEtoilesHTML(note) {
 }
 
 // Details et préférences du chauffeur
-async function chargerDetailsTrajet(trajetId, chauffeurId) {
+async function chargerDetailsTrajet(trajetId, chauffeurId, vehiculeId) {
     try {
-        const response = await fetch(`../../Modele/CRUD_covoiturages/get_chauffeur_details.php?chauffeur_id=${chauffeurId}`);
+        const response = await fetch(`../../Modele/CRUD_covoiturages/get_chauffeur_details.php?chauffeur_id=${chauffeurId}&vehicule_id=${vehiculeId}`);
         const data = await response.json();
 
         if (data.status === 'success') {
@@ -129,6 +189,91 @@ async function chargerDetailsTrajet(trajetId, chauffeurId) {
 }
 
 
+
+// Participer à un trajet
+function confirmerParticipation(trajetId) {
+    // Double confirmation pour l'utilisateur
+    if (confirm("Confirmez-vous vouloir utiliser vos crédits pour participer à ce trajet ?")) {
+        if (confirm("Êtes-vous absolument certain de vouloir réserver ? (Action irréversible)")) {
+
+            // Demande à l'utilisateur combien de places il veut
+            const nbPlaces = prompt("Combien de places souhaitez-vous réserver ?", "1");
+
+            // Vérifie que c'est bien un nombre entier positif
+            const nbPlacesInt = parseInt(nbPlaces, 10);
+            if (isNaN(nbPlacesInt) || nbPlacesInt <= 0) {
+                alert("Nombre de places invalide.");
+                return;
+            }
+
+             
+            participerAuTrajet(trajetId, nbPlacesInt);
+        }
+    }
+}
+
+// Fonction pour envoyer la reservation au serveur
+function participerAuTrajet(trajetId, nbPlaces) {
+    fetch("../../Modele/CRUD_covoiturages/participer_trajet.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ covoiturage_id: trajetId, nb_places: nbPlaces })
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Si l'utilisateur n'est pas connecté, redirection vers la page de connexion
+            if (data.status === "not_connected") {
+                alert("Veuillez vous connecter ou vous inscrire pour pouvoir effectuer une réservation.");
+                window.location.href = "/Connexion";
+                return;
+            }
+
+            alert(data.message);
+            // Si la réservation a réussi, recharge la page pour mettre à jour les infos
+            if (data.status === "success") location.reload();
+        })
+        .catch(error => console.error("Erreur lors de la participation au trajet :", error));
+}
+
+
+
+// Événements filtres
+['mention', 'prix', 'duree', 'animaux', 'note'].forEach(id => {
+    // Appliquer les filtres lors de la saisie ou modification
+    document.getElementById(id).addEventListener('input', appliquerFiltres);
+    document.getElementById(id).addEventListener('change', appliquerFiltres);
+});
+
+// Gérer la recherche par ville de départ, d’arrivée et jour
+document.getElementById('form-recherche').addEventListener('submit', function (e) {
+    e.preventDefault(); 
+
+    // Récupération des valeurs des champs
+    const jour = document.getElementById('jour').value;
+    const depart = document.getElementById('depart').value.toLowerCase();
+    const arrivee = document.getElementById('arrivee').value.toLowerCase();
+
+    // Clone la liste originale des trajets
+    let resultats = [...covoituragesOriginaux];
+
+    // Filtrer par date si renseignée
+    if (jour) {
+        resultats = resultats.filter(trajet => trajet.jour === jour.split('-').reverse().join('/'));
+    }
+
+    // Filtrer par ville de départ si renseigné
+    if (depart) {
+        resultats = resultats.filter(trajet => trajet.depart.toLowerCase().includes(depart));
+    }
+
+    // Filtrer par ville d’arrivée si renseigné
+    if (arrivee) {
+        resultats = resultats.filter(trajet => trajet.arrivee.toLowerCase().includes(arrivee));
+    }
+
+    // Afficher les résultats filtrés
+    afficherCovoiturages(resultats);
+});
 
 
 // Chargement des covoiturages au démarrage de la page

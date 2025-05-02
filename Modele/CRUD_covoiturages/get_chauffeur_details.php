@@ -1,6 +1,7 @@
 <?php
 // Connexion à la base de données
 include('../db_connection.php');
+
 // Réponse au format JSON
 header('Content-Type: application/json');
 
@@ -10,7 +11,8 @@ if (!isset($_GET['chauffeur_id'])) {
     exit;
 }
 
-$chauffeur_id = $_GET['chauffeur_id'];
+$chauffeur_id = $_GET['chauffeur_id']; // Identifiant du chauffeur
+$vehicule_id = $_GET['vehicule_id'] ?? null; // Identifiant du véhicule (ou null si non disponible)
 
 // Récupération des infos utilisateur
 $query = "SELECT id, pseudo FROM utilisateurs WHERE id = :id";
@@ -18,11 +20,24 @@ $stmt = $pdo->prepare($query);
 $stmt->execute(['id' => $chauffeur_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Si l'utilisateur est trouvé
 if ($user) {
-    // Récupération des infos véhicule lié au chauffeur
-    $vehiculeQuery = "SELECT * FROM vehicules WHERE utilisateur_id = :user_id LIMIT 1";
-    $vehiculeStmt = $pdo->prepare($vehiculeQuery);
-    $vehiculeStmt->execute(['user_id' => $chauffeur_id]);
+    // Récupération du véhicule
+    if ($vehicule_id) {
+        // Si un véhicule spécifique est précisé
+        $vehiculeQuery = "SELECT * FROM vehicules WHERE id = :vehicule_id AND utilisateur_id = :user_id LIMIT 1";
+        $vehiculeStmt = $pdo->prepare($vehiculeQuery);
+        $vehiculeStmt->execute([
+            'vehicule_id' => $vehicule_id,
+            'user_id' => $chauffeur_id
+        ]);
+    } else {
+        // Sinon, on prend le premier véhicule du chauffeur
+        $vehiculeQuery = "SELECT * FROM vehicules WHERE utilisateur_id = :user_id LIMIT 1";
+        $vehiculeStmt = $pdo->prepare($vehiculeQuery);
+        $vehiculeStmt->execute(['user_id' => $chauffeur_id]);
+    }
+
     $vehicule = $vehiculeStmt->fetch(PDO::FETCH_ASSOC);
 
     // Récupération des préférences
@@ -31,7 +46,7 @@ if ($user) {
     $prefStmt->execute(['user_id' => $chauffeur_id]);
     $preferences = $prefStmt->fetch(PDO::FETCH_ASSOC);
 
-    // Réponse JSON avec les données trouvées
+    // Réponse JSON 
     echo json_encode([
         "status" => "success",
         "utilisateur" => [
@@ -40,7 +55,6 @@ if ($user) {
         "vehicule" => $vehicule ?: [],
         "preferences" => $preferences ?: [],
     ]);
-    
     
 } else {
     echo json_encode(["status" => "error", "message" => "Chauffeur non trouvé"]);
