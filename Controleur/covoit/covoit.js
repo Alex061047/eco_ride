@@ -15,15 +15,42 @@ function chargerCovoiturages() {
 
 
 // Appliquer les filtres
+function appliquerFiltres(filtresPersonnalises = {}) {
+    // On part d'une copie complète de tous les covoiturages
+    let covoituragesFiltres = [...covoituragesOriginaux];
 
-function appliquerFiltres() {
-    let covoituragesFiltres = [...covoituragesOriginaux]; // Copie pour ne pas modifier l’original
+    // Récupère les valeurs des filtres. Si des filtres personnalisés sont fournis, on les utilise; sinon on prend les valeurs saisies dans les champs du formulaire
+    const villeDepart = filtresPersonnalises.depart !== undefined ? filtresPersonnalises.depart : document.getElementById('depart').value.trim();
+    const villeArrivee = filtresPersonnalises.arrivee !== undefined ? filtresPersonnalises.arrivee : document.getElementById('arrivee').value.trim();
+    const dateRecherchee = filtresPersonnalises.jour !== undefined ? filtresPersonnalises.jour : document.getElementById('jour').value;
+    const mention = filtresPersonnalises.mention !== undefined ? filtresPersonnalises.mention : document.getElementById('mention').checked;
+    const prixMax = filtresPersonnalises.prix !== undefined ? filtresPersonnalises.prix : parseFloat(document.getElementById('prix').value);
+    const dureeMax = filtresPersonnalises.duree !== undefined ? filtresPersonnalises.duree : document.getElementById('duree').value;
+    const animaux = filtresPersonnalises.animaux !== undefined ? filtresPersonnalises.animaux : document.getElementById('animaux').value;
+    const noteMin = filtresPersonnalises.note !== undefined ? filtresPersonnalises.note : parseInt(document.getElementById('note').value);
 
-    const mention = document.getElementById('mention').checked;
-    const prixMax = parseFloat(document.getElementById('prix').value);
-    const dureeMax = document.getElementById('duree').value;
-    const animaux = document.getElementById('animaux').value;
-    const noteMin = parseInt(document.getElementById('note').value);
+
+    // Filtre départ
+    if (villeDepart) {
+        covoituragesFiltres = covoituragesFiltres.filter(trajet =>
+            trajet.depart.toLowerCase().includes(villeDepart.toLowerCase())
+        );
+    }
+
+    // Filtre arrivée
+    if (villeArrivee) {
+        covoituragesFiltres = covoituragesFiltres.filter(trajet =>
+            trajet.arrivee.toLowerCase().includes(villeArrivee.toLowerCase())
+        );
+    }
+
+    // Filtre date
+    if (dateRecherchee) {
+        const jourRecherche = new Date(dateRecherchee).toISOString().split('T')[0];
+        covoituragesFiltres = covoituragesFiltres.filter(trajet =>
+            trajet.jour.startsWith(jourRecherche)
+        );
+    }
 
     // Filtre mention écologique (que les véhicules électriques)
     if (mention) {
@@ -66,15 +93,79 @@ if (animaux && animaux !== "null") {
 }
 
 
+
 // Affichage des covoiturages
 function afficherCovoiturages(covoiturages) {
     const container = document.getElementById("liste-covoiturages");
     container.innerHTML = "";
 
+    // Verifie si aucun covoiturage ne correspond aux critères de recherche
     if (covoiturages.length === 0) {
-        container.innerHTML = "<div class='alert alert-info'>Aucun covoiturage disponible actuellement.</div>";
+         // On vérifie si l'utilisateur a déjà relancé une recherche sans date
+        const dejaRelance = document.getElementById("liste-covoiturages").dataset.relance === "true";
+
+        // Si une relance a déjà été faite, on affiche juste un message
+    if (dejaRelance) {
+        container.innerHTML = `
+            <div class='alert alert-warning text-center'>
+                <h6>Désolé, aucun trajet n'est actuellement proposé avec ces critères.</h6>
+            </div>`;
+    } else {
+        // Sinon, on propose à l'utilisateur de relancer la recherche sans filtrer par date
+        container.innerHTML = `<div class='d-flex flex-column alert alert-info bg-secondary text-center justify-content-center'>
+        <h6>Aucun covoiturage disponible actuellement.</h6>
+                            <button id="btn-date-proche" class="btn btn-primary mt-2">
+                            Rechercher les dates les plus proches pour cet itinéraire
+                            </button>
+                            </div>`;
+                            // Quand l'utilisateur clique sur le bouton
+                            document.getElementById("btn-date-proche").addEventListener("click", () => {
+                                // Vide le champ de la date pour supprimer ce filtre
+                                const dateInput = document.getElementById("jour");
+                                if (dateInput) dateInput.value = ""; // on vide la date dans le champ
+
+                                // Marque la recherche comme déjà été relancée
+                                 container.dataset.relance = "true";
+                            
+                                // Récupère toutes les valeurs des filtres à conserver
+                                const depart = document.getElementById("depart").value.trim();
+                                const arrivee = document.getElementById("arrivee").value.trim();
+                                const prix = parseFloat(document.getElementById("prix").value);
+                                const duree = document.getElementById("duree").value;
+                                const animaux = document.getElementById("animaux").value;
+                                const note = parseInt(document.getElementById("note").value);
+                                const mention = document.getElementById("mention").checked;
+                            
+                                appliquerFiltres({
+                                    depart,
+                                    arrivee,
+                                    jour: "", // Permet de ne pas filtrer par date
+                                    prix,
+                                    duree,
+                                    animaux,
+                                    note,
+                                    mention
+                                });
+                            });
+                        }             
+                            
         return;
     }
+
+    
+    // Filtrer en supprimant les trajets antérieur à aujourd'hui
+const aujourdHui = new Date();
+covoiturages = covoiturages.filter(trajet => {
+    // Extrait le jour, le mois et l'année
+    const [jour, mois, annee] = trajet.jour.split('/').map(Number);
+    const dateTrajet = new Date(annee, mois - 1, jour); // mois commence à 0 en JS
+
+    // Créer une date correspondant à aujourd'hui
+    const trajetAujourdHui = new Date(aujourdHui.getFullYear(), aujourdHui.getMonth(), aujourdHui.getDate());
+    // Filtre le trajet uniquement s'il a lieu aujourd'hui ou plus tard
+    return dateTrajet >= trajetAujourdHui;
+});
+
 
     covoiturages.forEach(trajet => {
         if (trajet.nb_places_restantes === 0) return; // On ignore les trajets complets
@@ -274,6 +365,7 @@ document.getElementById('form-recherche').addEventListener('submit', function (e
     // Afficher les résultats filtrés
     afficherCovoiturages(resultats);
 });
+
 
 
 // Chargement des covoiturages au démarrage de la page

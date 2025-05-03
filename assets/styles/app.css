@@ -11,6 +11,10 @@
   background-color: var(--primary-color) !important;
 }
 
+.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
 .btn-success {
   background-color: var(--success-color) !important;
 }
