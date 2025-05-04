@@ -1,6 +1,8 @@
 <?php
 // Connexion à la base de donnée
 include('../db_connection.php');
+// Connexion à MongoDB pour les logs
+include('../mongodb/mongo_logs.php');
 // Démarre la session PHP
 session_start();
 // La réponse sera envoyée au format JSON
@@ -27,7 +29,7 @@ if (!$trajetId || $nbPlacesDemandees <= 0) {
 
 try {
     // Vérifier que le covoiturage existe et a assez de places restantes
-    $stmt = $pdo->prepare("SELECT nb_places_restantes FROM covoiturages WHERE id = :id AND etat = 'à venir'");
+    $stmt = $pdo->prepare("SELECT nb_places_restantes, prix FROM covoiturages WHERE id = :id AND etat = 'à venir'");
     $stmt->execute(['id' => $trajetId]);
     $trajet = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -42,6 +44,19 @@ try {
         echo json_encode(['status' => 'error', 'message' => 'Pas assez de places restantes pour ce trajet']);
         exit;
     }
+
+    // Calcul du coût total
+    $prixTotal = $trajet['prix'] * $nbPlacesDemandees;
+
+     // Vérifier le crédit de l'utilisateur
+     $stmtCredit = $pdo->prepare("SELECT credit FROM utilisateurs WHERE id = :user_id");
+     $stmtCredit->execute(['user_id' => $userId]);
+     $utilisateur = $stmtCredit->fetch(PDO::FETCH_ASSOC);
+ 
+     if (!$utilisateur || $utilisateur['credit'] < $prixTotal) {
+         echo json_encode(['status' => 'error', 'message' => 'Crédit insuffisant pour effectuer cette réservation']);
+         exit;
+     }
 
     // Préparation de la requête pour insérer une réservation
     $insert = $pdo->prepare("INSERT INTO reservations (passager_id, covoiturage_id, statut)
@@ -64,7 +79,26 @@ try {
         'id' => $trajetId
     ]);
 
-    echo json_encode(['status' => 'success', 'message' => 'Réservation confirmée avec succès !']);
+    // Déduire le crédit de l'utilisateur
+    $updateCredit = $pdo->prepare("UPDATE utilisateurs 
+                                   SET credit = credit - :montant 
+                                   WHERE id = :user_id");
+    $updateCredit->execute([
+        'montant' => $prixTotal,
+        'user_id' => $userId
+    ]);
+
+// Enregistrement logs MongoDB
+    $logDetails = [
+        "utilisateur_id" => $userId,
+        "covoiturage_id" => $trajetId,
+        "nb_places" => $nbPlacesDemandees,
+        "montant_paye" => $prixTotal
+    ];
+
+    enregistrerLog("Réservation", $logDetails);
+
+    echo json_encode(['status' => 'success', 'message' => 'Réservation confirmée avec succès ! Crédit déduit : ' . $prixTotal . '']);
 
 } catch (PDOException $e) {
     // Gestion des erreurs SQL
