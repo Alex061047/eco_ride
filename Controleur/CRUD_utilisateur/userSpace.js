@@ -116,7 +116,7 @@ function editField(field) {
     const userId = sessionStorage.getItem("userId");
 
     if (field === "role") {
-        // Affichage d’un dropdown pour le changement de rôle
+        // Affichage d'un dropdown pour le changement de rôle
         const dropdown = document.createElement("select");
         dropdown.innerHTML = `
             <option value="passager">Passager</option>
@@ -214,12 +214,12 @@ function editPassword() {
 function editVehicle(field) {
      // Configuration des champs disponibles
     const fieldConfigMap = {
-        immatriculation:       { label: "Nouvelle plaque d’immatriculation", id: "vehicle-plate" },
+        immatriculation:       { label: "Nouvelle plaque d'immatriculation", id: "vehicle-plate" },
         modele:                { label: "Nouveau modèle", id: "vehicle-model" },
         couleur:               { label: "Nouvelle couleur", id: "vehicle-color" },
         marque:                { label: "Nouvelle marque", id: "vehicle-brand" },
         nb_places:             { label: "Nouveau nombre de places", id: "vehicle-seats" },
-        energie:               { label: "Type d’énergie", id: "vehicle-energy" },
+        energie:               { label: "Type d'énergie", id: "vehicle-energy" },
         date_immatriculation:  { label: "Nouvelle date d'immatriculation", id: "vehicle-date" }
     };
 
@@ -503,7 +503,7 @@ function addVehicle() {
         const energie = energieSelect.value;
         document.body.removeChild(energieWrapper);
 
-        // Affiche ensuite le sélecteur de date d’immatriculation
+        // Affiche ensuite le sélecteur de date d'immatriculation
         const dateWrapper = document.createElement("div");
         dateWrapper.style.position = "fixed";
         dateWrapper.style.top = "0";

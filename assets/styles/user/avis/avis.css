@@ -1,0 +1,11 @@
+@import url(../../app.css);
+.etoile .star {
+  font-size: 2rem;
+  fill: var(--secondary-color) !important;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.etoile.checked .star {
+  fill: var(--star-color) !important;
+}/*# sourceMappingURL=avis.css.map */

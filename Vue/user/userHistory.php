@@ -51,7 +51,7 @@
                      <input type="text" class="form-control" id="depart" name="depart">
                 </div>
                 <div class="mb-3">
-                    <label for="arrivee" class="form-label">Ville d’arrivée</label>
+                    <label for="arrivee" class="form-label">Ville d'arrivée</label>
                     <input type="text" class="form-control" id="arrivee" name="arrivee">
                </div>
               <div class="mb-3">

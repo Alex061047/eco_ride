@@ -34,7 +34,7 @@ if (!in_array($file['type'], $allowedTypes)) {
     exit;
 }
 
-// Crée le dossier s’il n’existe pas (on sait jamais)
+// Crée le dossier s'il n’existe pas (on sait jamais)
 $targetDir = "../../uploads/photos_utilisateurs/";
 if (!file_exists($targetDir)) {
     mkdir($targetDir, 0755, true);

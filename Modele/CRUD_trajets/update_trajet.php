@@ -1,5 +1,6 @@
 <?php
 include '../db_connection.php';
+require '../mongodb/mongo_connection.php';
 require '../mailer/sendMail.php';
 
 header('Content-Type: application/json');
@@ -47,6 +48,59 @@ if ($nouvelEtat === "terminé") {
     $stmtUpdateReservations = $pdo->prepare($sqlUpdateReservations);
     $stmtUpdateReservations->execute(['trajet_id' => $trajetId]);
 }
+
+if ($nouvelEtat === "terminé") {
+    // Récupérer les emails et les identifiants des passagers
+    $sqlPassagers = "SELECT u.email, u.id FROM utilisateurs u
+                     JOIN reservations r ON u.id = r.passager_id
+                     WHERE r.covoiturage_id = :trajet_id AND r.statut = 'réalisé'";
+    $stmtPassagers = $pdo->prepare($sqlPassagers);
+    $stmtPassagers->execute(['trajet_id' => $trajetId]);
+    $passagers = $stmtPassagers->fetchAll(PDO::FETCH_ASSOC);
+
+
+    // Mail avis utilisateur
+    // Collection pour le token des liens 
+    $avisTokensCollection = $client->eco_ride->avis_tokens;
+
+    foreach ($passagers as $passager) {
+        $email = $passager['email'];
+        $userId = $passager['id'];
+    
+        // Générer un jeton unique
+        $token = bin2hex(random_bytes(32));
+    
+        // Stocker le token dans MongoDB
+        $avisTokensCollection->insertOne([
+            'token' => $token,
+            'user_id' => (int) $userId,
+            'trajet_id' => (int) $trajetId,
+            'crée_le' => date('H:i:s - d/m/Y'),
+            'used' => false
+        ]);
+    
+        // Construire le lien avec token
+        $lienAvis = "http://localhost:8000/Avis?token={$token}";
+    
+        // Envoi du mail
+        $sujet = "Merci d'avoir voyagé avec EcoRide !";
+        $message = "
+            <p>Bonjour,<br><br>
+            Votre trajet vient de se terminer.<br>
+            Merci de prendre un instant pour confirmer que tout s'est bien déroulé :<br><br>
+            <a href='{$lienAvis}'
+            style='background-color:#A16D24; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; display:inline-block;'>
+            Valider le bon déroulement du trajet
+            </a><br><br>
+            Merci de contribuer à la qualité de notre communauté.<br><br>
+            — L'équipe EcoRide
+            </p>
+        ";
+        sendMail($email, $sujet, $message);  
+    }
+}
+    
+
 
 //Si le trajet est annulé, mettre les réservations en "annulé"
 if ($nouvelEtat === "annulé") {

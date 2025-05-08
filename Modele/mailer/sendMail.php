@@ -31,6 +31,9 @@ function sendMail($destinataire, $sujet, $message) {
             ]
         ];
 
+        // Encodage UTF-8
+        $mail->CharSet = 'UTF-8';
+        
         // Paramètres email
         $mail->setFrom($_ENV['SMTP_FROM'], $_ENV['SMTP_FROM_NAME']);
         $mail->addAddress($destinataire);

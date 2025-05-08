@@ -70,7 +70,7 @@
     <div class="card p-3 mt-3" id="vehicle-card" style="display: block;">
         <h4>Informations véhicule</h4>
         <div class="row mt-2">
-            <div class="col-md-6">Plaque d’immatriculation : <strong id="vehicle-plate"></strong></div>
+            <div class="col-md-6">Plaque d'immatriculation : <strong id="vehicle-plate"></strong></div>
             <div class="col-md-6 text-end"><button class="btn btn-success btn-sm" onclick="editVehicle('immatriculation')">Modifier</button></div>
         </div>
          <!-- Date première immatriculation -->

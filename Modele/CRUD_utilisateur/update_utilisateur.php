@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $params[':mot_de_passe'] = password_hash($data['mot_de_passe'], PASSWORD_BCRYPT);
     }
 
-    // Si aucun champ n’est à mettre à jour, on arrête ici
+    // Si aucun champ n'est à mettre à jour, on arrête ici
     if (empty($fields)) {
         echo json_encode(["status" => "error", "message" => "Aucune donnée à mettre à jour."]);
         exit;

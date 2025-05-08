@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Liste des champs modifiables dans la table "preferences"
     $possibleFields = ["fumeur", "animaux", "discussions", "musique", "autre"];
 
-    // Pour chaque champ, s’il est présent dans les données reçues, on le prépare pour la requête
+    // Pour chaque champ, s'il est présent dans les données reçues, on le prépare pour la requête
     foreach ($possibleFields as $field) {
          if (isset($data[$field])) {
             // Convertit les réponses "oui"/"non" en 1/0 pour les champs de type booléen
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     enregistrerLog($action, "Préférences modifiées pour utilisateur ID : " . $data["utilisateur_id"]);
 
 
-    // Retour d’un message de succès
+    // Retour d'un message de succès
     echo json_encode(["status" => "success", "message" => "Préférences mises à jour."]);
 }
 ?>
