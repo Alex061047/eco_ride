@@ -10,6 +10,7 @@ export const allRoutes = [
         ["../../Controleur/CRUD_trajets/get_trajets.js", "../../Controleur/CRUD_trajets/historique.js", "../../Controleur/CRUD_trajets/new_trajets.js"]),
     new Route("/Connexion", "Connexion/Inscription", "../Vue/connexion/connexion.php", [], ["../../Controleur/CRUD_utilisateur/auth.js"]),
     new Route("/Avis", "Avis", "../Vue/user/avis.php", [], ["../../Controleur/CRUD_utilisateur/avis.js"]),
+    new Route("/Employe", "Employe", "../Vue/employe/espace_employe.php", ["employe"], ["../../Controleur/CRUD_employe/employe.js"]),
     new Route("404", "Page introuvable", "../Vue/404.html", []),
 ];
 

@@ -26,6 +26,20 @@ const LoadContentPage = async () => {
   const path = window.location.pathname;
   // Récupération de l'URL actuelle
   const actualRoute = getRouteByUrl(path);
+
+  // Vérifie si l'utilisateur a des droits d'accès aux pages
+  if (actualRoute.authorize.length > 0) {
+    const role = sessionStorage.getItem("userRole"); 
+
+    if (!role || !actualRoute.authorize.includes(role)) {
+      // Redirige vers une page d'erreur
+      window.history.pushState({}, "", "/404");
+      const html = await fetch("../../Vue/404.html").then(res => res.text());
+      document.getElementById("main-page").innerHTML = html;
+      document.title = "Page introuvable - " + websiteName;
+      return;
+    }
+  }
   
   // Récupération du contenu HTML de la route
   const html = await fetch(actualRoute.pathHtml).then((data) => data.text());

@@ -58,7 +58,7 @@ fetch("../../Modele/CRUD_trajets/get_trajets.php")
                             
                             <div class="col-md-4 text-center">
                                 <p><strong>Places restantes :</strong> ${trajet.nb_places_restantes}</p>
-                                <p><strong>Prix :</strong> ${trajet.prix}€</p>
+                                <p><strong>Prix :</strong> ${trajet.prix}</p>
                                 <p><strong>Véhicule :</strong> ${trajet.marque} ${trajet.modele}</p>
                             </div>
 

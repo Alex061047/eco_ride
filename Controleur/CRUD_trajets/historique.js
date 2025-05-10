@@ -19,7 +19,7 @@ fetch("../../Modele/CRUD_trajets/get_historique.php")
                             </div>
                             
                             <div class="col-md-6 text-center">
-                                <p><strong>Prix :</strong> ${trajet.prix}€</p>
+                                <p><strong>Prix :</strong> ${trajet.prix}</p>
                                 <p><strong>Véhicule :</strong> ${trajet.marque} ${trajet.modele}</p>
                             </div>
                         </div>

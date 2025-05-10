@@ -199,7 +199,7 @@ covoiturages = covoiturages.filter(trajet => {
                 </div>
                 <div class="col-1">
                     <h5 class="fw-light"><u>Prix</u></h5>
-                    <p class="mt-5">${trajet.prix}€</p>
+                    <p class="mt-5">${trajet.prix}</p>
                 </div>
                 <div class="col-3">
                     <h5 class="fw-light"><u>Jour | Heure | Durée</u></h5>
@@ -212,6 +212,9 @@ covoiturages = covoiturages.filter(trajet => {
                 <div class="col-1 d-flex flex-column align-items-center">
                     <button class="btn btn-success mt-2 mb-2" data-bs-toggle="collapse" data-bs-target="#details-${trajet.id}">Détail</button>
                     <button class="btn btn-primary participer-btn" data-id="${trajet.id}">Participer</button>
+                </div>
+                <div class="d-flex flex-row-reverse">
+                *Un voyage a la mention écologique s'il est effectué avec une voiture électrique.
                 </div>
                  <div class="collapse mt-3" id="details-${trajet.id}">
                     <div class="card card-body">
