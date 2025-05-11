@@ -1,6 +1,8 @@
 <?php
 // Connexion à la base de données
 include('../db_connection.php');
+// Connexion MongoDB
+require_once('../mongodb/mongo_connection.php');
 
 // Réponse au format JSON
 header('Content-Type: application/json');
@@ -46,6 +48,21 @@ if ($user) {
     $prefStmt->execute(['user_id' => $chauffeur_id]);
     $preferences = $prefStmt->fetch(PDO::FETCH_ASSOC);
 
+    // Récupération des avis validés du chauffeur dans MongoDB
+    $avisValides = $mongo->eco_ride->avis_trajet->find([
+    'chauffeur_id' => (int)$chauffeur_id,
+    'statut' => 'validé'
+    ]);
+
+// Liste vide recevra les données commentaire et date_envoi (en jour/mois/année)
+$avisListe = [];
+foreach ($avisValides as $avis) {
+    $avisListe[] = [
+        'commentaire' => $avis['commentaire'] ?? '',
+        'date_envoi' => isset($avis['date_envoi']) ? explode(' - ', $avis['date_envoi'])[1] : ''
+    ];
+}
+
     // Réponse JSON 
     echo json_encode([
         "status" => "success",
@@ -54,6 +71,7 @@ if ($user) {
         ],
         "vehicule" => $vehicule ?: [],
         "preferences" => $preferences ?: [],
+        "avis_valides" => $avisListe,
     ]);
     
 } else {

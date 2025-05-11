@@ -14,7 +14,7 @@ function chargerCovoiturages() {
 }
 
 
-// Appliquer les filtres
+// Appliquer les filtres 
 function appliquerFiltres(filtresPersonnalises = {}) {
     // On part d'une copie complète de tous les covoiturages
     let covoituragesFiltres = [...covoituragesOriginaux];
@@ -253,16 +253,17 @@ function genererEtoilesHTML(note) {
         </svg>`).join('');
 }
 
-// Details et préférences du chauffeur
+
+// Details, préférences et avis du chauffeur
 async function chargerDetailsTrajet(trajetId, chauffeurId, vehiculeId) {
     try {
         const response = await fetch(`../../Modele/CRUD_covoiturages/get_chauffeur_details.php?chauffeur_id=${chauffeurId}&vehicule_id=${vehiculeId}`);
         const data = await response.json();
 
         if (data.status === 'success') {
-            const { utilisateur, vehicule, preferences } = data;
+            const { utilisateur, vehicule, preferences, avis_valides } = data;
 
-            const html = `
+            let html = `
                 <p><strong>Chauffeur :</strong> ${utilisateur.pseudo || 'Non précisé'}</p>
                 <p><strong>Véhicule :</strong> ${vehicule.marque || 'N/A'} ${vehicule.modele || ''} (${vehicule.energie || 'N/A'})</p>
                 <p><strong>Fumeurs acceptés :</strong> ${preferences.fumeur ? 'Oui' : 'Non'}</p>
@@ -271,6 +272,17 @@ async function chargerDetailsTrajet(trajetId, chauffeurId, vehiculeId) {
                 <p><strong>Musique :</strong> ${preferences.musique ? 'Oui' : 'Non'}</p>
                 <p><strong>Autres préférences :</strong> ${preferences.autre || 'Aucune'}</p>
             `;
+
+            // Ajouts des avis
+            html += `<p><strong><u>Avis :</u></strong></p>`;
+            if (Array.isArray(avis_valides) && avis_valides.length > 0) {
+                avis_valides.forEach(avis => {
+                    html += `<p><em> "${avis.commentaire}" (${avis.date_envoi})</em></p>`;
+                });
+                
+            } else {
+                html += `<p>Aucun avis disponible.</p>`;
+            }
 
             document.getElementById(`details-content-${trajetId}`).innerHTML = html;
         } else {
@@ -281,6 +293,7 @@ async function chargerDetailsTrajet(trajetId, chauffeurId, vehiculeId) {
         document.getElementById(`details-content-${trajetId}`).innerHTML = "<p>Impossible de charger les détails.</p>";
     }
 }
+
 
 
 
