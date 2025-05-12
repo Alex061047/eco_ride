@@ -6,7 +6,7 @@ function genererDerniersJours(nbJours) {
     for (let i = nbJours - 1; i >= 0; i--) {
       const date = new Date();
       date.setDate(aujourdHui.getDate() - i);
-      // Formatage de la date jour/ mois
+      // Formatage de la date jour/mois
       const jour = String(date.getDate()).padStart(2, '0');
       const mois = String(date.getMonth() + 1).padStart(2, '0');
       labels.push(`${jour}/${mois}`);
@@ -15,13 +15,29 @@ function genererDerniersJours(nbJours) {
     return labels;
   }
   
-  // Génération de données factice
-  function genererDonneesFactices(nbJours) {
-    return Array.from({ length: nbJours }, () => Math.floor(Math.random() * 11));
+  // Récupération données du serveur
+  async function recupererDonneesReelles(labels) {
+    try {
+      const response = await fetch("../../Modele/CRUD_admin/graph_covoit.php");
+      const data = await response.json();
+  
+      // Création d'un dictionnaire jour/mois : total
+      const dataMap = {};
+      data.forEach(item => {
+        dataMap[item.jour] = parseInt(item.total);
+      });
+  
+      // Remplit les données selon les labels
+      const donnees = labels.map(label => dataMap[label] || 0);
+      return donnees;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données :", error);
+      return labels.map(() => 0);
+    }
   }
   
   // Création et affichage du graphique avec Chart.js
-  function afficherGraphique() {
+  async function afficherGraphique() {
     const canvas = document.getElementById("graphCovoiturages");
     if (!canvas) {
       console.warn("Canvas graphCovoiturages non trouvé.");
@@ -29,9 +45,11 @@ function genererDerniersJours(nbJours) {
     }
   
     const labels = genererDerniersJours(30);
-    const data = genererDonneesFactices(30);
+    const data = await recupererDonneesReelles(labels);
   
     const ctx = canvas.getContext("2d");
+
+    // Création du graphique
     new Chart(ctx, {
       type: 'bar',
       data: {
@@ -50,7 +68,7 @@ function genererDerniersJours(nbJours) {
             display: true,
           },
           legend: {
-            display: false 
+            display: false
           }
         },
         scales: {
@@ -67,4 +85,3 @@ function genererDerniersJours(nbJours) {
   
   // Appel pour afficher le graphique dès le chargement
   afficherGraphique();
-  
