@@ -32,9 +32,12 @@
     <div class="col-md-6 mb-4">
       <h5 class="text-center">Crédits gagnés par jour</h5>
       <div class="card p-3 shadow-sm">
-          <canvas id="graphCredits"></canvas>
-     </div>
-       <p class="mt-3 text-end pe-3"><strong>Crédit total perçu par la plateforme :</strong> <span id="creditTotal">0</span> crédits</p>
+        <canvas id="graphCredits"></canvas>
+      </div>
+      <p class="mt-3 text-end pe-3">
+        <strong>Crédit total perçu par la plateforme :</strong>
+        <span id="creditTotal">0</span> crédits
+      </p>
     </div>
   </div>
 

@@ -11,7 +11,7 @@ export const allRoutes = [
     new Route("/Connexion", "Connexion/Inscription", "../Vue/connexion/connexion.php", [], ["../../Controleur/CRUD_utilisateur/auth.js"]),
     new Route("/Avis", "Avis", "../Vue/user/avis.php", [], ["../../Controleur/CRUD_utilisateur/avis.js"]),
     new Route("/Employe", "Employe", "../Vue/employe/espace_employe.php", ["employe"], ["../../Controleur/CRUD_employe/employe.js"]),
-    new Route("/Admin", "Administrateur", "../Vue/admin/espace_admin.php", [], ["../../Controleur/CRUD_admin/admin.js"]),
+    new Route("/Admin", "Administrateur", "../Vue/admin/espace_admin.php", [], ["../../Controleur/CRUD_admin/graphCovoit.js", "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"]),
     new Route("404", "Page introuvable", "../Vue/404.html", []),
 ];
 
