@@ -92,13 +92,13 @@ function gererAvis(trajetId, passagerId, action, credit = null) {
 // Fonction d'attribution des crédits en cas de refus
 function ouvrirModalRefus(trajetId, passagerId, prix) {
     // Demande à l'employé combien de crédits accorder au chauffeur
-    const montant = prompt(`Crédit à attribuer au chauffeur (sur un total de ${prix} crédits) :`);
+    const montant = prompt(`Crédit à attribuer au chauffeur (sur un total de ${prix-2} crédits) :`);
     const montantFloat = parseFloat(montant);
 
     // Vérifie que la valeur est bien numérique et comprise entre 0 et le prix
-    if (!isNaN(montantFloat) && montantFloat >= 0 && montantFloat <= prix) {
+    if (!isNaN(montantFloat) && montantFloat >= 0 && montantFloat <= prix-2) {
         gererAvis(trajetId, passagerId, 'refuser', montantFloat);
     } else {
-        alert("Veuillez saisir un montant valide entre 0 et " + prix);
+        alert("Veuillez saisir un montant valide entre 0 et " + (prix - 2) );
     }
 }

@@ -98,6 +98,14 @@ try {
 
     enregistrerLog("Réservation", $logDetails);
 
+    // Enregistrement des crédits retenus pour la plateforme
+$logsCredit = $mongo->eco_ride->logs_credit;
+$logsCredit->insertOne([
+    'trajet_id' => (int) $trajetId,
+    'credits_plateforme' => 2 * $nbPlacesDemandees,
+    'date' => date('Y-m-d H:i:s')
+]);
+
     echo json_encode(['status' => 'success', 'message' => 'Réservation confirmée avec succès ! Crédit déduit : ' . $prixTotal . '']);
 
 } catch (PDOException $e) {

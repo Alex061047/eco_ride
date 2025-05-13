@@ -53,7 +53,7 @@ if (!$trajet) {
     exit;
 }
 
-$prixTrajet = (int) $trajet['prix'];
+$prixTrajet = (int) $trajet['prix'] - 2;
 
 try {
     // Avis validé
