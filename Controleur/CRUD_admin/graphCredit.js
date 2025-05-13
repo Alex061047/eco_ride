@@ -81,9 +81,24 @@ function genererDerniersJours(nbJours) {
         }
       }
     });
-
-
   }
   
+  // Récupère et affiche le total cumulé (sans limite de temps)
+async function afficherCreditTotal() {
+    try {
+      const res = await fetch("../../Modele/CRUD_admin/get_credit_total.php");
+      const json = await res.json();
+      const creditTotalElement = document.getElementById("creditTotal");
+      if (creditTotalElement) {
+        creditTotalElement.textContent = json.total;
+      }
+    } catch (error) {
+      console.error("Erreur récupération total crédits :", error);
+    }
+  }
+  
+ 
   // Appel pour afficher le graphique dès le chargement
   afficherGraphique();
+  // Appel pour afficher le crédit total
+  afficherCreditTotal();
