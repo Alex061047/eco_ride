@@ -18,7 +18,7 @@ function genererDerniersJours(nbJours) {
   // Récupération données du serveur
   async function recupererDonneesReelles(labels) {
     try {
-      const response = await fetch("../../Modele/CRUD_admin/graph_covoit.php");
+      const response = await fetch("../../Modele/CRUD_admin/graph_credit.php");
       const data = await response.json();
   
       // Création d'un dictionnaire jour/mois : total
@@ -81,6 +81,8 @@ function genererDerniersJours(nbJours) {
         }
       }
     });
+
+
   }
   
   // Appel pour afficher le graphique dès le chargement
