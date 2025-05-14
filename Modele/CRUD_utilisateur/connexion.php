@@ -15,7 +15,7 @@ if (!empty($data["email"]) && !empty($data["mot_de_passe"])) {
     $mot_de_passe = $data["mot_de_passe"];
 
     // Prépare la requête SQL pour sélectionner les informations de l'utilisateur en fonction de l'email
-    $stmt = $pdo->prepare("SELECT id, pseudo, role, mot_de_passe FROM utilisateurs WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT id, pseudo, role, mot_de_passe, note FROM utilisateurs WHERE email = ?");
     // Exécute la requête en passant l'email comme paramètre
     $stmt->execute([$email]);
     
@@ -24,6 +24,12 @@ if (!empty($data["email"]) && !empty($data["mot_de_passe"])) {
 
     // Vérifie si un utilisateur est trouvé et si le mot de passe correspond
     if ($user && password_verify($mot_de_passe, $user["mot_de_passe"])) {
+        // Vérifie si l'utilisateur est suspendu
+    if ($user["note"] == -1) {
+        echo json_encode(["status" => "error", "message" => "Compte suspendu. Veuillez contacter un administrateur."]);
+        exit;
+    }
+
         session_start(); 
         $_SESSION['user_id'] = $user["id"]; // On stocke l'ID de l'utilisateur connecté
 
