@@ -5,6 +5,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const logoutItem = document.getElementById('logout-item');
     const loginItem = document.getElementById('login-item');
     const logoutLink = document.getElementById('logout-link');
+    const dashboardAdminItem = document.getElementById('dashboard-admin');
+
 
     // Vérifie si l'utilisateur est connecté et récupère son rôle
     const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
@@ -20,8 +22,14 @@ window.addEventListener('DOMContentLoaded', () => {
         // Affiche le tableau de bord si l'utilisateur est un employé
         if (userRole === "employe") {
             dashboardItem.style.display = "block";
-        } else {
+        } else if (dashboardItem) {
             dashboardItem.style.display = "none";
+        }
+        // Affiche le tableau de bord si l'utilisateur est un administrateur
+        if (userRole === "admin") {
+            dashboardAdminItem.style.display = "block";
+        } else if (dashboardAdminItem) {
+            dashboardAdminItem.style.display = "none";
         }
     } else {
         // Utilisateur non connecté
