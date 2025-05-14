@@ -68,3 +68,105 @@ btnCreerEmploye.addEventListener("click", () => {
         });
     });
 });
+
+
+
+
+// Bouton Suspendre un compte
+
+// Sélection du bouton "Suspendre un compte"
+const btnSuspendre = document.getElementById("btn-suspendre-compte");
+
+// Affichage/Masquage du tableau
+btnSuspendre.addEventListener("click", () => {
+    const existingTable = document.getElementById("table-utilisateurs");
+
+    // Si le tableau existe déjà, on le retire
+    if (existingTable) {
+        existingTable.closest(".card").remove();
+        return;
+    }
+
+    // Création de la structure du tableau
+    const container = document.querySelector(".container");
+
+    const tableWrapper = document.createElement("div");
+    tableWrapper.classList.add("card", "shadow", "p-4", "mb-4", "bg-secondary");
+    tableWrapper.innerHTML = `
+        <h4 class="mb-3 text-center">Gérer les comptes utilisateurs</h4>
+        <input type="text" id="search-user" class="form-control mb-3" placeholder="Recherche...">
+        <div class="table-responsive table-dark">
+            <table id="table-utilisateurs" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pseudo</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Crédit</th>
+                        <th>Note</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    `;
+    container.appendChild(tableWrapper);
+
+    // Chargement des utilisateurs via PHP
+    fetch("../../Modele/CRUD_admin/get_utilisateurs.php")
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.querySelector("#table-utilisateurs tbody");
+            tbody.innerHTML = "";
+
+            data.forEach(user => {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.pseudo}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>${user.credit}</td>
+                    <td>${user.note}</td>
+                    <td>
+                        <button class="btn btn-${user.note == -1 ? "primary" : "danger"} btn-sm suspend-btn">
+                            ${user.note == -1 ? "Rétablir" : "Suspendre"}
+                        </button>
+                    </td>
+                `;
+
+                // Ajout de l'écouteur sur le bouton "Suspendre"
+                tr.querySelector(".suspend-btn").addEventListener("click", () => {
+                    fetch("../../Modele/CRUD_admin/suspendre_utilisateur.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id: user.id })
+                    })
+                    .then(res => res.json())
+                    .then(resp => {
+                        alert(resp.message);
+                        btnSuspendre.click(); // Alterne masquer et afficher le tableau
+                        btnSuspendre.click();
+                    })
+                    .catch(() => alert("Erreur lors de la suspension."));
+                });
+
+                tbody.appendChild(tr);
+            });
+        });
+
+    // Filtrage avec la barre de recherche
+    document.getElementById("search-user").addEventListener("input", function () {
+        const searchValue = this.value.toLowerCase();
+        const rows = document.querySelectorAll("#table-utilisateurs tbody tr");
+
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(searchValue) ? "" : "none";
+        });
+    });
+});
+
