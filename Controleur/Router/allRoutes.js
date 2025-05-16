@@ -4,7 +4,7 @@ import Route from "./Route.js";
 //Définition des routes
 export const allRoutes = [
     new Route("/", "Accueil", "../Vue/home/accueil.php", []),
-    new Route("/Covoiturage", "Covoiturage", "../Vue/covoit/covoit.php", [], ["../../Controleur/covoit/covoit.js"]),
+    new Route("/Covoiturage", "Covoiturage", "../Vue/covoit/covoit.php", [], ["../../Controleur/CRUD_covoiturages/covoit.js"]),
     new Route("/EspaceUtilisateur", "Espace Utilisateur", "../Vue/user/userSpace.php", [], ["../../Controleur/CRUD_utilisateur/userSpace.js"]),
     new Route("/Trajets", "Historique des trajets", "../Vue/user/userHistory.php", [],
         ["../../Controleur/CRUD_trajets/get_trajets.js", "../../Controleur/CRUD_trajets/historique.js", "../../Controleur/CRUD_trajets/new_trajets.js"]),
