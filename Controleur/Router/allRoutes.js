@@ -13,6 +13,7 @@ export const allRoutes = [
     new Route("/Employe", "Employe", "../Vue/employe/espace_employe.php", ["employe"], ["../../Controleur/CRUD_employe/employe.js"]),
     new Route("/Admin", "Administrateur", "../Vue/admin/espace_admin.php", ["admin"], ["../../Controleur/CRUD_admin/graphCovoit.js", "../../Controleur/CRUD_admin/graphCredit.js", "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js", "../../Controleur/CRUD_admin/admin.js"]),
     new Route("/MentionLegale", "Mention Legale", "../Vue/footer/mention_legale.php", [], []),
+    new Route("/PC", "Politique Confidentialite", "../Vue/footer/politique_confidentialite.php", [], []),
     new Route("404", "Page introuvable", "../Vue/404.html", []),
 ];
 

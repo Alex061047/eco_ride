@@ -37,7 +37,7 @@
 
     <h4>Données personnelles</h4>
     <p>
-        Le traitement de vos données à caractère personnel est régi par notre <a href="#">Charte de Protection des Données Personnelles</a>, conformément au Règlement Général sur la Protection des Données 2016/679 du 27 avril 2016 (« RGPD »).
+        Le traitement de vos données à caractère personnel est régi par notre <a href="/PC">Charte de Protection des Données Personnelles</a>, conformément au Règlement Général sur la Protection des Données 2016/679 du 27 avril 2016 (« RGPD »).
     </p>
 
     <h4>Propriété intellectuelle</h4>
