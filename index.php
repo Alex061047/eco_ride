@@ -31,7 +31,7 @@
 <footer class="footer text-black py-3 mt-auto">
     <div class="container d-flex justify-content-between">
         <p class="mb-0">contact@ecoride.fr</p>
-        <a href="#" class="text-black">Mention légale</a>
+        <a href="/MentionLegale" class="text-black">Mention légale</a>
     </div>
 </footer>
 
