@@ -6,11 +6,11 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->safeLoad(); // Utilise safeLoad pour ne pas planter si .env est absent
 
-// Vérifie si on est sur Heroku (JAWSDB_URL fourni)
+// Vérifie si on est sur Heroku
 $jawsdb_url = getenv("JAWSDB_URL") ?: $_ENV['JAWSDB_URL'] ?? null;
 
 if ($jawsdb_url) {
-    // Parser l'URL
+    
     $url = parse_url($jawsdb_url);
     $host = $url["host"];
     $port = $url["port"] ?? 3306;
@@ -18,7 +18,7 @@ if ($jawsdb_url) {
     $username = $url["user"];
     $password = $url["pass"];
 } else {
-    // Sinon, on utilise les variables locales (ex: .env)
+    // Variables locales
     $host = $_ENV['DB_HOST'] ?? 'localhost';
     $port = $_ENV['DB_PORT'] ?? '3306';
     $dbname = $_ENV['DB_NAME'] ?? 'eco_ride';

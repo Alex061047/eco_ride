@@ -1,19 +1,28 @@
 <?php
-require '../../vendor/autoload.php'; // Charge l'extension MongoDB
+require '../../vendor/autoload.php'; 
+
 use Dotenv\Dotenv;
+use MongoDB\Client;
 
-// Charger les variables d'environnement
+// Variables d'environnement
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-$dotenv->load();
+$dotenv->safeLoad(); 
 
-// Connexion à MongoDB
-$mongoUri = $_ENV['MONGO_URI'] ?? 'mongodb://localhost:27017';
-$client = new MongoDB\Client($mongoUri);
+// Récupérer URI MongoDB
+$mongoUri = $_ENV['MONGO_URI'] ?? getenv('MONGO_URI') ?? 'mongodb://localhost:27017';
 
-// Pour que $mongo soit accessible dans les autres fichiers
-$mongo = $client;
+try {
+    // Connexion au client MongoDB
+    $client = new Client($mongoUri);
 
-// Sélection de la base de données et de la collection
-$database = $client->eco_ride;
-$logsCollection = $database->logs;
+    // Base de données 
+    $database = $client->eco_ride;
+
+    // Permettre un acces des éléments dans les autres fichiers
+    $mongo = $client;
+    $logsCollection = $database->logs;
+
+} catch (Exception $e) {
+    die("Erreur de connexion MongoDB : " . $e->getMessage());
+}
 ?>
