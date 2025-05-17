@@ -120,6 +120,7 @@ SMTP_FROM_NAME=EcoRide
 
 * Base de données MySQL
 DB_HOST=localhost
+DB_PORT=3306
 DB_NAME=eco_ride
 DB_USER=root
 DB_PASS=

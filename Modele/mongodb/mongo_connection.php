@@ -7,7 +7,7 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
 // Connexion à MongoDB
-$mongoUri = $_ENV['MONGO_URI'] ?: 'mongodb://localhost:27017';
+$mongoUri = $_ENV['MONGO_URI'] ?? 'mongodb://localhost:27017';
 $client = new MongoDB\Client($mongoUri);
 
 // Pour que $mongo soit accessible dans les autres fichiers
