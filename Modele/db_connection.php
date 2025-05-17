@@ -1,10 +1,17 @@
 <?php
+require '../../vendor/autoload.php'; 
+use Dotenv\Dotenv;
+
+// Charger les variables d'environnement
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 // Paramètres de connexion
-$host = 'localhost';
-$dbname = 'eco_ride';
-$username = 'root';
-$password = '';
+$host = $_ENV['DB_HOST'] ?: 'localhost';
+$dbname = $_ENV['DB_NAME'] ?: 'eco_ride';
+$username = $_ENV['DB_USER'] ?: 'root';
+$password = $_ENV['DB_PASS'] ?: '';
+
 
 try {
     // Connexion à la base de données avec PDO
