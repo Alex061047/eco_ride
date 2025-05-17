@@ -7,7 +7,7 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->safeLoad(); // Utilise safeLoad pour ne pas planter si .env est absent
 
 // Vérifie si on est sur Heroku
-$jawsdb_url = getenv(`JAWSDB_URL`) ?: $_ENV['JAWSDB_URL'] ?? null;
+$jawsdb_url = getenv("JAWSDB_URL") ?: $_ENV['JAWSDB_URL'] ?? null;
 
 if ($jawsdb_url) {
     
