@@ -1,13 +1,17 @@
 <?php
-require_once("../db_connection.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+ob_start();
+require '../db_connection.php';
 require '../mongodb/mongo_connection.php';
 require '../mailer/sendMail.php';
 
 use Dotenv\Dotenv;
 
 // Charger les variables d'environnement
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->safeLoad();
 
 // Récupérer l'URL de base depuis l'environnement
 $baseUrl = $_ENV['BASE_URL'] ?? getenv('BASE_URL') ?? 'http://localhost:8000';
@@ -46,7 +50,7 @@ if (($nouvelEtat === "en cours" || $nouvelEtat === "terminé") && $trajet['chauf
     exit;
 }
 
-try{
+
 //Mettre à jour l'état du trajet
 $sqlUpdate = "UPDATE covoiturages SET etat = :etat WHERE id = :trajet_id";
 $stmtUpdate = $pdo->prepare($sqlUpdate);
@@ -149,7 +153,9 @@ if ($nouvelEtat === "annulé") {
 }
 
 echo json_encode(["success" => true, "message" => "Mise à jour effectuée avec succès"]);
-} catch (Exception $e) {
-    echo json_encode(["status" => "error", "message" => "Erreur serveur: " . $e->getMessage()]);
+
+$output = ob_get_clean();
+if (!headers_sent() && !empty($output)) {
+    echo json_encode(["success" => false, "message" => "Sortie inattendue", "output" => $output]);
 }
 ?>
