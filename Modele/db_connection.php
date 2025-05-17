@@ -1,27 +1,37 @@
 <?php
-require '../../vendor/autoload.php'; 
+require '../../vendor/autoload.php';
 use Dotenv\Dotenv;
 
-// Charger les variables d'environnement
+// Charger les variables d'environnement (si elles existent en local)
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+$dotenv->safeLoad(); // Utilise safeLoad pour ne pas planter si .env est absent
 
-// Paramètres de connexion
-$host = $_ENV['DB_HOST'] ?? getenv('DB_HOST') ?? 'localhost';
-$port = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?? '3306';
-$dbname = $_ENV['DB_NAME'] ?? getenv('DB_NAME') ?? 'eco_ride';
-$username = $_ENV['DB_USER'] ?? getenv('DB_USER') ?? 'root';
-$password = $_ENV['DB_PASS'] ??  getenv('DB_PASS') ?? '';
+// Vérifie si on est sur Heroku (JAWSDB_URL fourni)
+$jawsdb_url = getenv("JAWSDB_URL") ?: $_ENV['JAWSDB_URL'] ?? null;
 
+if ($jawsdb_url) {
+    // Parser l'URL
+    $url = parse_url($jawsdb_url);
+    $host = $url["host"];
+    $port = $url["port"] ?? 3306;
+    $dbname = ltrim($url["path"], '/');
+    $username = $url["user"];
+    $password = $url["pass"];
+} else {
+    // Sinon, on utilise les variables locales (ex: .env)
+    $host = $_ENV['DB_HOST'] ?? 'localhost';
+    $port = $_ENV['DB_PORT'] ?? '3306';
+    $dbname = $_ENV['DB_NAME'] ?? 'eco_ride';
+    $username = $_ENV['DB_USER'] ?? 'root';
+    $password = $_ENV['DB_PASS'] ?? '';
+}
 
 try {
-    // Connexion à la base de données avec PDO
     $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $username, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Active les erreurs SQL
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC // Récupère les données sous forme de tableau associatif
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
 } catch (PDOException $e) {
     die("Erreur de connexion : " . $e->getMessage());
 }
-
-?> 
+?>
