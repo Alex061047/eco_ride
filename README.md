@@ -108,6 +108,25 @@ http://localhost:8000/
 * `Modele/db_connection.php` : configuration MySQL
 * `Modele/mongodb/mongo_connection.php` : configuration MongoDB
 
+6. **Configuration du fichier `.env` :**
+* SMTP (envoi d'emails)
+SMTP_HOST=smtp.gmail.com
+SMTP_USER=email@email.com
+SMTP_PASS=motdepasse_application
+SMTP_PORT=587
+SMTP_SECURE=tls
+SMTP_FROM=email@email.com
+SMTP_FROM_NAME=EcoRide
+
+* Base de données MySQL
+DB_HOST=localhost
+DB_NAME=eco_ride
+DB_USER=root
+DB_PASS=
+
+* Base de données MongoDB
+MONGO_URI=mongodb://localhost:27017
+
 ---
 
 ## Structure du projet
