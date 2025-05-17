@@ -1,0 +1,19 @@
+# Active le moteur de réécriture d'URL
+RewriteEngine On
+
+# Si la requête est pour un fichier existant ou un dossier existant, ne rien faire
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Sinon, rediriger toutes les requêtes vers index.php (pour que le routeur JS gère la route)
+RewriteRule ^ index.php [L]
+
+# Empêcher l'affichage du contenu des dossiers
+Options -Indexes
+
+# Configuration des headers pour la sécurité
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "DENY"
+Header set X-XSS-Protection "1; mode=block"
+
