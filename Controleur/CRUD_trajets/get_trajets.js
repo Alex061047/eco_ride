@@ -138,15 +138,20 @@ function mettreAJourEtatTrajet(trajetId, nouvelEtat) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: trajetId, etat: nouvelEtat })
     })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-
-        if (nouvelEtat === "terminé") {
-            //Supprimer le trajet de l'affichage
-            document.querySelector(`.trajet-card[data-id="${trajetId}"]`).remove();
+    .then(async response => {
+        // Vérification pour éviter de parse si vide
+        const text = await response.text();
+        try {
+            const data = JSON.parse(text);
+            alert(data.message);
+    
+            if (nouvelEtat === "terminé") {
+                document.querySelector(`.trajet-card[data-id="${trajetId}"]`).remove();
+            }
+            location.reload();
+        } catch (e) {
+            console.error("Réponse non JSON :", text);
         }
-        location.reload();
     })
     .catch(error => console.error("Erreur lors de la mise à jour du trajet :", error));
 }

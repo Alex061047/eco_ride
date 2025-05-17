@@ -1,7 +1,16 @@
 <?php
-include '../db_connection.php';
+require_once("../db_connection.php");
 require '../mongodb/mongo_connection.php';
 require '../mailer/sendMail.php';
+
+use Dotenv\Dotenv;
+
+// Charger les variables d'environnement
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+// Récupérer l'URL de base depuis l'environnement
+$baseUrl = $_ENV['BASE_URL'] ?? getenv('BASE_URL') ?? 'http://localhost:8000';
 
 header('Content-Type: application/json');
 session_start();
@@ -17,7 +26,7 @@ if (!isset($data['id']) || !isset($data['etat'])) {
     exit;
 }
 
-$trajetId = $data['id'];
+$trajetId = intval($data['id']);
 $nouvelEtat = $data['etat'];
 
 // Vérifier que le trajet existe et récupérer son chauffeur
@@ -37,6 +46,7 @@ if (($nouvelEtat === "en cours" || $nouvelEtat === "terminé") && $trajet['chauf
     exit;
 }
 
+try{
 //Mettre à jour l'état du trajet
 $sqlUpdate = "UPDATE covoiturages SET etat = :etat WHERE id = :trajet_id";
 $stmtUpdate = $pdo->prepare($sqlUpdate);
@@ -80,7 +90,7 @@ if ($nouvelEtat === "terminé") {
         ]);
     
         // Construire le lien avec token
-        $lienAvis = "http://localhost:8000/Avis?token={$token}";
+        $lienAvis = "{$baseUrl}/Avis?token={$token}";
     
         // Envoi du mail
         $sujet = "Merci d'avoir voyagé avec EcoRide !";
@@ -139,4 +149,7 @@ if ($nouvelEtat === "annulé") {
 }
 
 echo json_encode(["success" => true, "message" => "Mise à jour effectuée avec succès"]);
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "message" => "Erreur serveur: " . $e->getMessage()]);
+}
 ?>
