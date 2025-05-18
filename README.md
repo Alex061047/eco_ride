@@ -118,6 +118,9 @@ SMTP_SECURE=tls
 SMTP_FROM=email@email.com
 SMTP_FROM_NAME=EcoRide
 
+* URL pour l'avis suite à l'email
+BASE_URL=http://localhost:8000
+
 * Base de données MySQL
 DB_HOST=localhost
 DB_PORT=3306
