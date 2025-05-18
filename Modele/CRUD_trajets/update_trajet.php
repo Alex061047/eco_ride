@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-ob_start();
 require '../db_connection.php';
 require '../mongodb/mongo_connection.php';
 require '../mailer/sendMail.php';
@@ -153,15 +149,4 @@ if ($nouvelEtat === "annulé") {
 }
 
 echo json_encode(["success" => true, "message" => "Mise à jour effectuée avec succès"]);
-
-$output = ob_get_clean();
-if (!headers_sent() && !empty($output)) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Sortie inattendue",
-        "output" => trim($output) 
-    ]);
-    exit;
-}
-
 ?>
