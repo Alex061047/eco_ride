@@ -168,7 +168,7 @@ eco_ride/
 |-- composer.lock         # Fixe les versions des dépendances
 |-- create_database.sql   # Permet de créer la base de donnée en local (via une importation sur MySQL)
 |-- index.php             # Page de base qui "encadre les autres pages" (les autres pages sont injéctées dynamiquement)
-|-- README.md             # Fichier actuel
+|-- README.md             # Fichier actuel 
 ```
 
 ---
