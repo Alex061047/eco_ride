@@ -156,6 +156,12 @@ echo json_encode(["success" => true, "message" => "Mise à jour effectuée avec 
 
 $output = ob_get_clean();
 if (!headers_sent() && !empty($output)) {
-    echo json_encode(["success" => false, "message" => "Sortie inattendue", "output" => $output]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Sortie inattendue",
+        "output" => trim($output) 
+    ]);
+    exit;
 }
+
 ?>
