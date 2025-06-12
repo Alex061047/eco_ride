@@ -1,13 +1,15 @@
 <?php
-// Connexion à la base de données
+// Connexion à la base de données MySQL
 include('../db_connection.php');
-// Réponse au format JSON
-header('Content-Type: application/json');
+// Inclusion de la classe Covoiturage
+require_once('../Classes/Covoiturage.php');
 
-// Démarre la session PHP
+// Réponse attendue en format JSON
+header('Content-Type: application/json');
+// Démarrage de la session PHP
 session_start();
 
-// Récupère tous les trajets disponibles
+// Requête SQL pour récupérer les covoiturages à venir avec toutes les informations nécessaires
 $sql = "SELECT 
             c.id, 
             c.depart, 
@@ -34,19 +36,33 @@ $sql = "SELECT
         WHERE c.etat = 'à venir' AND c.nb_places_restantes > 0
         ORDER BY c.date_heure_depart ASC";
 
+// Exécution de la requête SQL
 $stmt = $pdo->query($sql);
-$covoiturages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Gestion pour ajouter "mention écologique"
-// Si le véhicule est électrique, on ajoute "mention_ecologique" = "Oui"
-foreach ($covoiturages as &$trajet) {
-    if (isset($trajet['energie']) && strtolower($trajet['energie']) === 'électrique') {
-        $trajet['mention_ecologique'] = 'Oui';
-    } else {
-        $trajet['mention_ecologique'] = 'Non';
-    }
+// Initialisation du tableau
+$covoiturages = [];
+
+// Parcours des résultats pour les transformer en objets Covoiturage
+foreach ($rows as $row) {
+    // Création d’un objet à partir de la classe Covoiturage
+    $covoit = new Covoiturage($row);
+    // Conversion de l’objet en tableau associatif exploitable pour l’API
+    $trajet = $covoit->toArray();
+
+
+    // Ajout d’informations supplémentaires non incluses dans la classe
+    $trajet['pseudo'] = $row['pseudo'];
+    $trajet['photo_profil'] = $row['photo_profil'];
+    $trajet['note'] = $row['note'];
+    $trajet['marque'] = $row['marque'];
+    $trajet['modele'] = $row['modele'];
+    $trajet['energie'] = $row['energie'];
+    $trajet['animaux'] = $row['animaux'];
+
+    // Ajout du trajet au tableau final
+    $covoiturages[] = $trajet;
 }
 
-// Envoi de la réponse en JSON
+// Envoi de la réponse JSON
 echo json_encode($covoiturages);
-?>
