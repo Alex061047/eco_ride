@@ -1,0 +1,11 @@
+node_modules
+uploads
+vendor
+.env
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+*.log
+*.sql
