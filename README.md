@@ -133,6 +133,73 @@ MONGO_URI=mongodb://localhost:27017
 
 ---
 
+## Lancer avec Docker
+
+
+### Prérequis
+* Docker et Docker Compose installés (pour Linux)
+* Ou Docker Desktop (pour Windows ou Mac)
+
+### Étapes
+1. **Cloner le dépôt**
+
+```bash
+git clone https://github.com/Alex061047/eco_ride.git
+cd eco_ride
+```
+
+2. **Configuration du fichier `.env` :**
+
+Créez un fichier .env à la racine du projet avec les variables suivantes :
+# Configuration MySQL
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=eco_ride
+DB_USER=root
+DB_PASS=
+
+# Configuration MongoDB
+MONGO_URI=mongodb://localhost:27017
+
+# Configuration SMTP (envoi d'e-mails)
+SMTP_HOST=smtp.gmail.com
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=motdepasse_application
+SMTP_PORT=587
+SMTP_SECURE=tls
+SMTP_FROM=your_email@gmail.com
+SMTP_FROM_NAME=EcoRide
+
+# URL de base pour l’application
+BASE_URL=http://localhost:8080
+
+
+3. **Lancer les conteneurs**
+
+```bash
+docker-compose up --build
+```
+
+4. **Accéder à l'application**
+
+```
+http://localhost:8080
+```
+### Fichier Docker
+Le projet inclut les fichiers suivants pour la conteneurisation :
+
+* `Dockerfile` : image PHP 8.1 avec Apache, extensions pdo_mysql, mysqli et modules Apache rewrite, headers
+
+* `docker-compose.yml` : gère les services web, mysql, mongo
+
+* `.dockerignore` : exclut les fichiers inutiles du contexte Docker
+
+* `.env`(à créer avant de lancer docker-compose) : variables d’environnement centralisées
+
+* `.htaccess` : gère la réécriture d’URL pour le routage SPA et sécurise les headers HTTP
+
+---
+
 ## Structure du projet
 
 ```
@@ -164,9 +231,14 @@ eco_ride/
 |   |-- 404.html          # Page de redirection si erreur de chemin d'accès ou pas de droit d'accès
 │   |-- navbar.html       # Barre de navigation
 |
+|-- .dockerignore         # Exclusion des fichiers inutiles lors du build Docker
+|-- .env                  # Variables sensibles (connexion BDD, SMTP, URI Mongo, etc.)
+|-- .htaccess             # Réécriture d’URL pour le routeur (gestion par Apache dans le cadre de Docker)
 |-- composer.json         # Bibliothèques et packages nécessaires
 |-- composer.lock         # Fixe les versions des dépendances
 |-- create_database.sql   # Permet de créer la base de donnée en local (via une importation sur MySQL)
+|-- Dockerfile            # Configuration de l’image Apache + PHP + modules activés
+|-- docker-compose.yml    # Définition des services (PHP, MySQL, MongoDB)
 |-- index.php             # Page de base qui "encadre les autres pages" (les autres pages sont injéctées dynamiquement)
 |-- README.md             # Fichier actuel 
 ```
