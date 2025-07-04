@@ -6,6 +6,8 @@ COPY . /var/www/html
 
 # Active le module Apache rewrite
 RUN a2enmod rewrite
+RUN a2enmod rewrite headers
+
 
 # Configuration d'Apache pour activer le .htaccess
 RUN echo '<Directory /var/www/html/>\n\

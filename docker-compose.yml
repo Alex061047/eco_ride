@@ -12,6 +12,13 @@ services:
       - mongo
     env_file:
       - .env
+    environment:
+      DB_HOST: mysql
+      BASE_URL: http://localhost:8080
+      MONGO_URI: mongodb://mongo:27017
+    restart: unless-stopped
+    networks:
+      - ecoride
 
   mysql:
     image: mysql:8.0
@@ -21,10 +28,10 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - ecoride
 
   mongo:
     image: mongo:5.0
@@ -33,6 +40,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+      - ecoride
 
 volumes:
   mysql_data:
