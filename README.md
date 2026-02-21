@@ -1,50 +1,50 @@
 ﻿# EcoRide, Plateforme de covoiturage écologique
 
-Bienvenue dans EcoRide, une application web A coresponsable qui vise A promouvoir le covoiturage. Le projet a A tA dA veloppA dans le cadre dA A A ?Tun examen de fin de formation en tant que DA veloppeur Web et Web Mobile.
+Bienvenue dans EcoRide, une application web écoresponsable qui vise à promouvoir le covoiturage. Le projet est de développer dans le cadre d'un examen de fin de formation en tant que Développeur Web et Web Mobile.
 
 ---
 
-## PrA sentation du projet
+## Présentation du projet
 
 EcoRide est une plateforme de covoiturage qui :
 
-* Encourage l'utilisation de véhicules écologiques (mention spA ciale si électrique).
-* Permet aux utilisateurs de crA er ou rejoindre des trajets.
-* Utilise un systA me de crédits virtuels.
-* Fournit une interface pour les passagers, chauffeurs, employA s et administrateurs. il existe A galement un role mixte passager-chauffeur.
+* Encourage l'utilisation de véhicules écologiques (mention spéciale si électrique).
+* Permet aux utilisateurs de créer ou rejoindre des trajets.
+* Utilise un système de crédits virtuels.
+* Fournit une interface pour les passagers, chauffeurs, employés et administrateurs. il existe également un role mixte passager-chauffeur.
 * Stocke les données principales dans MySQL et les logs/statistiques dans MongoDB.
 
 ---
 
-## FonctionnalitA s principales
+## Fonctionnalités principales
 
 ### Utilisateur
 
-* CrA er un compte et se connecter (crA dit initial de 20 crédits).
-* Rechercher un itinA raire selon la ville, la date, des filtres (véhicule électrique, prix, durA e, note, animaux).
-* RA server une place avec un paiement en crédits (2 crédits retenus pour la plateforme).
+* Créer un compte et se connecter (crédit initial de 20 crédits).
+* Rechercher un itinéraire selon la ville, la date, des filtres (véhicule électrique, prix, durée, note, animaux).
+* Réserver une place avec un paiement en crédits (2 crédits retenus pour la plateforme).
 * Consulter et modifier son profil.
 * Proposer un trajet (si chauffeur).
 * Voir son historique (trajets, préférences, réservations).
 
-### EmployA 
+### Employé
 
-* Valider ou refuser des avis dA posA s aprA s un trajet (avec gestion des crédits accordA s).
-* Voir les avis litigieux (trajets mal passA s) avec les informations concernA es.
+* Valider ou refuser des avis déposés après un trajet (avec gestion des crédits accordés).
+* Voir les avis litigieux (trajets mal passés) avec les informations concernées.
 
 ### Administrateur
 
-* CrA er des comptes employA s.
+* Créer des comptes employés.
 * Suspendre des comptes.
 * Visualiser des graphiques :
 
  * Nombre de covoiturages / jour.
- * CrA dits gagnA s / jour.
- * CrA dits cumulA s totaux de la plateforme.
+ * Crédits gagnés / jour.
+ * Crédits cumulés totaux de la plateforme.
 
 ---
 
-## Technologies utilisA es
+## Technologies utilisées
 
 ### Stack technique
 
@@ -55,29 +55,48 @@ EcoRide est une plateforme de covoiturage qui :
 
 **Back-End :**
 
- * PHP natif (avec PDO pour requA tes SQL sA curisA es)
+* **PHP natif (architecture MVC légère)** avec séparation claire :
+  * `Controleur_b/` : contrôleurs back-end (points d’entrée API sécurisés)
+  * `Modele/` : logique métier + accès aux données MySQL/MongoDB
+* **Sécurité serveur centralisée** via `Controleur_b/_security.php` :
+  * validation de méthode HTTP (`GET/POST`)
+  * validation du corps JSON
+  * contrôle d’authentification (session)
+  * contrôle d’autorisation par rôle (`admin`, `employe`, `chauffeur`, `passager`)
+* **Sessions PHP** utilisées comme source de vérification côté serveur (et non `sessionStorage`)
+* **API JSON** pour la communication front ↔ back (`fetch` côté front, `json_encode` côté serveur)
+* **Accès MySQL avec PDO** :
+  * requêtes préparées (protection injection SQL)
+  * validation des paramètres côté serveur
+  * contrôles d’intégrité métier (ex. appartenance véhicule/utilisateur)
+* **Transactions SQL** sur les opérations critiques (ex. réservation trajet : crédits, places, réservation)
+* **Gestion d’erreurs back-end** standardisée (codes HTTP + messages JSON)
+* **Intégration MongoDB** pour les données non relationnelles (logs, avis, statistiques), avec fallback contrôlé si indisponible
+* **Chargement de configuration via `.env`** (DB, Mongo, SMTP, URL) avec `vlucas/phpdotenv`
+* **Dépendances gérées par Composer** (autoload PSR, librairies MongoDB, PHPMailer)
+
 
 **Base de données :**
 
  * **Relationnelle :** MySQL
  * **NoSQL :** MongoDB (logs actions, statistiques, crédits)
 
-**DA ploiement :** Heroku
+**Déploiement :** Heroku
 
 ---
 
 ## Instructions pour lancer en local
 
-### PrA requis
+### Prérequis
 
 * XAMPP ou MAMP (Apache + MySQL)
 * MongoDB installA localement (ou via Docker)
-* PHP A A A ?A A A 7.4
-* Navigateur moderne (Chrome, FirefoxA A A ?A A A )
+* PHP > 7.4
+* Navigateur moderne (Chrome, Firefox... )
 
-### A A A ?tapes
+### Etapes
 
-1. **Cloner le dA pA t :**
+1. **Cloner le dépot :**
 
 ```bash
 git clone https://github.com/Alex061047/eco_ride.git
@@ -86,18 +105,18 @@ git clone https://github.com/Alex061047/eco_ride.git
 2. **Configurer la base MySQL :**
 
 * Lancer phpMyAdmin
-* CrA er la base `eco_ride`
+* Créer la base `eco_ride`
 * Importer le fichier `create_database.sql` fourni
 
 3. **Configurer MongoDB :**
 
-* DA marrer le serveur Mongo (port par dA faut : 27017)
-* MongoDB crA era automatiquement la base `eco_ride` et les collections via les scripts PHP (logs\_credit, logs\_employe, logs\_suspendu, etc.)
+* Démarrer le serveur Mongo (port par défaut : 27017)
+* MongoDB créera automatiquement la base `eco_ride` et les collections via les scripts PHP (logs\_credit, logs\_employe, logs\_suspendu, etc.)
 
 4. **Lancer le serveur Apache :**
 
 * Placer le projet dans `htdocs/`
-* AccA der via :
+* Accéder via :
 
 ```
 http://localhost:8000/
@@ -136,12 +155,12 @@ MONGO_URI=mongodb://localhost:27017
 ## Lancer avec Docker
 
 
-### PrA requis
-* Docker et Docker Compose installA s (pour Linux)
+### Prérequis
+* Docker et Docker Compose installés (pour Linux)
 * Ou Docker Desktop (pour Windows ou Mac)
 
-### A A A ?tapes
-1. **Cloner le dA pA t**
+### Etapes
+1. **Cloner le dépot**
 
 ```bash
 git clone https://github.com/Alex061047/eco_ride.git
@@ -150,7 +169,7 @@ cd eco_ride
 
 2. **Configuration du fichier `.env` :**
 
-CrA ez un fichier .env A la racine du projet avec les variables suivantes :
+Créez un fichier .env à la racine du projet avec les variables suivantes :
 # Configuration MySQL
 DB_HOST=localhost
 DB_PORT=3306
@@ -170,7 +189,7 @@ SMTP_SECURE=tls
 SMTP_FROM=your_email@gmail.com
 SMTP_FROM_NAME=EcoRide
 
-# URL de base pour lA A A ?Tapplication
+# URL de base pour l'application
 BASE_URL=http://localhost:8080
 
 
@@ -180,7 +199,7 @@ BASE_URL=http://localhost:8080
 docker-compose up --build
 ```
 
-4. **AccA der A l'application**
+4. **Accéder à l'application**
 
 ```
 http://localhost:8080
@@ -190,13 +209,13 @@ Le projet inclut les fichiers suivants pour la conteneurisation :
 
 * `Dockerfile` : image PHP 8.1 avec Apache, extensions pdo_mysql, mysqli et modules Apache rewrite, headers
 
-* `docker-compose.yml` : gA re les services web, mysql, mongo
+* `docker-compose.yml` : gère les services web, mysql, mongo
 
 * `.dockerignore` : exclut les fichiers inutiles du contexte Docker
 
-* `.env`(A crA er avant de lancer docker-compose) : variables dA A A ?Tenvironnement centralisA es
+* `.env`(Crée avant de lancer docker-compose) : variables d'environnement centralisées
 
-* `.htaccess` : gA re la rA A criture dA A A ?TURL pour le routage SPA et sA curise les headers HTTP
+* `.htaccess` : gère la récriture d'URL pour le routage SPA et sécurise les headers HTTP
 
 ---
 
@@ -205,45 +224,55 @@ Le projet inclut les fichiers suivants pour la conteneurisation :
 ```
 eco_ride/
 |-- Assets/ # Feuilles de style SCSS/CSS, images
-| |-- images/ # Images prA sentes sur le site
+| |-- images/ # Images présentes sur le site
 | |-- styles/ # Ensemble des fichiers et dossiers css
 |
 |-- Controleur/ # Scripts JS pour la logique (fetch, routage, actions)
 | |-- CRUD_*/ # CRUD pour utilisateur, trajets, admin, covoiturages, employe
 | |-- navbar/ # Logique de la barre de navigation (masquer et afficher)
-| |-- Router/ # SystA me de routage et sécurité 
+| |-- Router/ # Système de routage et sécurité 
 |
-|-- Modele/ # Connexion BDD, requA tes SQL & MongoDB
-A A A ", |-- CRUD_*/ # CRUD pour utilisateur, trajets, admin, covoiturages, employe, vehicule
-A A A ", |-- mongodb/ # Connexion et enregistrements des logs MongoDB
-| |-- db_connection.php # Connexion A MySQL
+|-- Controleur_b/ # Contrôleurs back-end: validation, autorisation, sécurité, routage vers les modèles (indépendant du front)
+| |-- _security.php # Fonctions communes de sécurité (auth, rôle, méthode, JSON, erreurs)
+| |-- CRUD_admin/ # Endpoints admin (création employé, suspension, statistiques, crédits)
+| |-- CRUD_covoiturages/ # Endpoints covoiturages (liste, détails chauffeur, participation)
+| |-- CRUD_employe/ # Endpoints employé (lecture/traitement des avis)
+| |-- CRUD_trajets/ # Endpoints trajets (ajout, mise à jour état, historique, annulation)
+| |-- CRUD_utilisateur/ # Endpoints utilisateur (connexion, profil, photo, avis, etc.)
+| |-- CRUD_vehicule/ # Endpoints véhicule et préférences (CRUD + récupération profil)
+|
+|
+|-- Modele/ # Connexion BDD, requètes SQL et MongoDB
+| |-- CRUD_*/ # CRUD pour utilisateur, trajets, admin, covoiturages, employe, vehicule
+| |-- mongodb/ # Connexion et enregistrements des logs MongoDB
+| |-- db_connection.php # Connexion à MySQL
 |
 |-- uploads/ # Dossier de stockage des photos de profil
 |
 |-- Vue/ # Pages front (administrateur, connexion, covoiturage, employA , footer, accueil, utilisateur, 404, navigation )
-A A A ", |-- admin/ # Page administrateur 
-A A A ", |-- connexion/ # Page de connexion
-A A A ", |-- covoit/ # Page des covoiturages
-A A A ", |-- employe/ # Page employA 
-| |-- footer/ # Page accessible depuis le footer (Mention Legale, Politique de confidentialitA )
+| |-- admin/ # Page administrateur 
+| |-- connexion/ # Page de connexion
+| |-- covoit/ # Page des covoiturages
+| |-- employe/ # Page employé
+| |-- footer/ # Page accessible depuis le footer (Mention Legale, Politique de confidentialité )
 | |-- home/ # Page d'accueil
 | |-- user/ # Page espace utilisateur
-| |-- 404.html # Page de redirection si erreur de chemin d'accA s ou pas de droit d'accA s
-A A A ", |-- navbar.html # Barre de navigation
+| |-- 404.html # Page de redirection si erreur de chemin d'accès ou pas de droit d'accès
+| |-- navbar.html # Barre de navigation
 |
 |-- .dockerignore # Exclusion des fichiers inutiles lors du build Docker
 |-- .env # Variables sensibles (connexion BDD, SMTP, URI Mongo, etc.)
-|-- .htaccess # RA A criture dA A A ?TURL pour le routeur (gestion par Apache dans le cadre de Docker)
-|-- composer.json # BibliothA ques et packages nA cessaires
-|-- composer.lock # Fixe les versions des dA pendances
-|-- create_database.sql # Permet de crA er la base de donnA e en local (via une importation sur MySQL)
-|-- Dockerfile # Configuration de lA A A ?Timage Apache + PHP + modules activA s
-|-- docker-compose.yml # DA finition des services (PHP, MySQL, MongoDB)
-|-- index.php # Page de base qui "encadre les autres pages" (les autres pages sont injA ctA es dynamiquement)
+|-- .htaccess # Récriture d'URL pour le routeur (gestion par Apache dans le cadre de Docker)
+|-- composer.json # Bibliothèques et packages nécessaires
+|-- composer.lock # Fixe les versions des dépendances
+|-- create_database.sql # Permet de créer la base de donnée en local (via une importation sur MySQL)
+|-- Dockerfile # Configuration de l'image Apache + PHP + modules activés
+|-- docker-compose.yml # Définition des services (PHP, MySQL, MongoDB)
+|-- index.php # Page de base qui "encadre les autres pages" (les autres pages sont injectées dynamiquement)
 |-- README.md # Fichier actuel 
 ```
 
 ---
 
-Pour plus dA A A ?Tinfos sur le projet, consulter le manuel utilisateur PDF et la documentation technique.
+Pour plus d'informations sur le projet, consulter le manuel utilisateur PDF et la documentation technique.
 
