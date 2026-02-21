@@ -1,8 +1,8 @@
 <?php
 // Connexion à la base de données
-include('../db_connection.php');
+include __DIR__ . '/../db_connection.php';
 // Connexion MongoDB
-require_once('../mongodb/mongo_connection.php');
+require_once __DIR__ . '/../mongodb/mongo_connection.php';
 
 // Réponse au format JSON
 header('Content-Type: application/json');
@@ -78,3 +78,4 @@ foreach ($avisValides as $avis) {
     echo json_encode(["status" => "error", "message" => "Chauffeur non trouvé"]);
 }
 ?>
+

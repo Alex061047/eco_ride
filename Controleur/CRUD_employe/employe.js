@@ -1,22 +1,36 @@
-// Chargement des trajets
+﻿// Chargement des trajets
 chargerTrajet();
 
 function chargerTrajet() {
-    // Récupérer la valeur du filtre "Note max"
     const noteMax = document.getElementById("noteFilter").value;
     const queryParams = noteMax ? `?noteMax=${noteMax}` : "";
 
-    // Récupérer les avis depuis le serveur
-    fetch("../../Modele/CRUD_employe/get_avis.php" + queryParams)
-        .then(response => response.json())
+    fetch("../../Controleur_b/CRUD_employe/get_avis_controller.php" + queryParams)
+        .then(async response => {
+            const text = await response.text();
+            let avisList;
+            try {
+                avisList = JSON.parse(text);
+            } catch (e) {
+                throw new Error("Réponse invalide: " + text.slice(0, 200));
+            }
+
+            if (!response.ok) {
+                throw new Error((avisList && avisList.message) ? avisList.message : "Erreur HTTP " + response.status);
+            }
+
+            return avisList;
+        })
         .then(avisList => {
             const tbody = document.querySelector("#table tbody");
-            if (!tbody) return; 
+            if (!tbody) return;
 
-            // Réinitialise le contenu du tableau
             tbody.innerHTML = "";
 
-             // Parcours chaque avis et insère une ligne dans le tableau
+            if (!Array.isArray(avisList)) {
+                throw new Error((avisList && avisList.message) ? avisList.message : "Format inattendu");
+            }
+
             avisList.forEach(avis => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -31,20 +45,26 @@ function chargerTrajet() {
                     <td>${avis.note ? avis.note : 'Aucune'}</td>
                     <td>
                         <button class="btn btn-success btn-sm" onclick="gererAvis(${avis.trajet_id}, ${avis.passager_id}, 'valider')">Valider</button>
-                       <button class="btn btn-danger btn-sm" onclick="ouvrirModalRefus(${avis.trajet_id}, ${avis.passager_id}, ${avis.prix})">Refuser</button>
+                        <button class="btn btn-danger btn-sm" onclick="ouvrirModalRefus(${avis.trajet_id}, ${avis.passager_id}, ${avis.prix})">Refuser</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            if (avisList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted">Aucun avis en attente.</td></tr>`;
+            }
         })
         .catch(error => {
-            // Affiche les erreurs dans la console en cas d'échec
             console.error("Erreur lors du chargement des avis :", error);
+            const tbody = document.querySelector("#table tbody");
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="10" class="text-danger">Erreur chargement avis : ${error.message}</td></tr>`;
+            }
         });
 }
 
-
-// Recherche dynamique dans le tableau (barre de recherche)
+// Recherche dynamique
 document.getElementById("searchInput").addEventListener("input", function () {
     const query = this.value.toLowerCase();
     const rows = document.querySelectorAll("#table tbody tr");
@@ -55,10 +75,9 @@ document.getElementById("searchInput").addEventListener("input", function () {
     });
 });
 
-
 // Filtrer par note max
 document.getElementById("noteFilter").addEventListener("change", function () {
-    chargerTrajet(); // Recharge les trajets
+    chargerTrajet();
 });
 
 // Actions sur les avis
@@ -69,13 +88,11 @@ function gererAvis(trajetId, passagerId, action, credit = null) {
         action: action
     };
 
-    // Si l'action est un refus, ajoute le crédit à accorder
     if (action === "refuser" && credit !== null) {
         payload.credit = parseFloat(credit);
     }
 
-    // Envoi de payload au serveur
-    fetch("../../Modele/CRUD_employe/gestion_avis.php", {
+    fetch("../../Controleur_b/CRUD_employe/gestion_avis_controller.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -87,18 +104,14 @@ function gererAvis(trajetId, passagerId, action, credit = null) {
     });
 }
 
-
-
-// Fonction d'attribution des crédits en cas de refus
+// Attribution des crédits en cas de refus
 function ouvrirModalRefus(trajetId, passagerId, prix) {
-    // Demande à l'employé combien de crédits accorder au chauffeur
-    const montant = prompt(`Crédit à attribuer au chauffeur (sur un total de ${prix-2} crédits) :`);
+    const montant = prompt(`Crédit à attribuer au chauffeur (sur un total de ${prix - 2} crédits) :`);
     const montantFloat = parseFloat(montant);
 
-    // Vérifie que la valeur est bien numérique et comprise entre 0 et le prix
-    if (!isNaN(montantFloat) && montantFloat >= 0 && montantFloat <= prix-2) {
+    if (!isNaN(montantFloat) && montantFloat >= 0 && montantFloat <= prix - 2) {
         gererAvis(trajetId, passagerId, 'refuser', montantFloat);
     } else {
-        alert("Veuillez saisir un montant valide entre 0 et " + (prix - 2) );
+        alert("Veuillez saisir un montant valide entre 0 et " + (prix - 2));
     }
 }

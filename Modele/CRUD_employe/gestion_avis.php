@@ -1,8 +1,15 @@
 <?php
 // Connexion à la base de données MySQL
-require '../db_connection.php';
+require __DIR__ . '/../db_connection.php';
 // Connexion à la base MongoDB
-require '../mongodb/mongo_connection.php';
+require __DIR__ . '/../mongodb/mongo_connection.php';
+session_start();
+
+// Sécurité serveur: accès réservé employé/admin
+if (!isset($_SESSION['user_id']) || !in_array(($_SESSION['user_role'] ?? ''), ['employe', 'admin'], true)) {
+    echo json_encode(["status" => "error", "message" => "Accès interdit."]);
+    exit;
+}
 
 // Réponse en JSON
 header('Content-Type: application/json');
@@ -28,6 +35,11 @@ if (!in_array($action, ['valider', 'refuser'])) {
 }
 
 // Connexion à la collection MongoDB
+if (!isset($mongo) || $mongo === null) {
+    echo json_encode(["status" => "error", "message" => "Service avis indisponible (MongoDB)."]);
+    exit;
+}
+
 $avisCollection = $mongo->eco_ride->avis_trajet;
 
 // Recherche de l'avis à partir de trajet_id + passager_id
@@ -138,3 +150,4 @@ $logs->insertOne([
     echo json_encode(["status" => "error", "message" => "Erreur serveur : " . $e->getMessage()]);
 }
 ?>
+

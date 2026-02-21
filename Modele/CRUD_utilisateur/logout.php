@@ -8,3 +8,4 @@ setcookie(session_name(), '', time() - 3600, '/');
 
 header("Location: /"); // Redirection vers l'accueil
 exit;
+

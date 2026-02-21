@@ -1,8 +1,15 @@
 <?php
 // Connexion à la base de données MySQL
-require_once('../db_connection.php');
+require_once __DIR__ . '/../db_connection.php';
 // Connexion à MongoDB
-require_once('../mongodb/mongo_connection.php');
+require_once __DIR__ . '/../mongodb/mongo_connection.php';
+session_start();
+
+// Sécurité serveur: accès réservé admin
+if (!isset($_SESSION['user_id']) || (($_SESSION['user_role'] ?? '') !== 'admin')) {
+    echo json_encode(["status" => "error", "message" => "Accès interdit."]);
+    exit;
+}
 
 // Réponse en JSON
 header('Content-Type: application/json');
@@ -102,3 +109,4 @@ echo json_encode(["status" => "success", "message" => "Utilisateur rétabli avec
 
 }
 ?>
+

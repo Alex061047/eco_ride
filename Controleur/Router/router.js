@@ -4,6 +4,38 @@ import { allRoutes, websiteName } from "./allRoutes.js";
 // Création d'une route pour la page 404 (page introuvable)
 const route404 = new Route("404", "Page introuvable", "../../Vue/404.html", []);
 
+const normalizeRole = (role) => {
+  if (!role) return "";
+  return String(role)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+};
+
+// Récupère l'utilisateur connecté depuis le serveur (source fiable).
+const getServerUser = async () => {
+  try {
+    const response = await fetch("../../Controleur_b/CRUD_vehicule/get_user_controller.php");
+    const data = await response.json();
+
+    if (data && data.status === "success" && data.user) {
+      return data.user;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification serveur du rôle :", error);
+  }
+
+  return null;
+};
+
+const render404 = async () => {
+  window.history.pushState({}, "", "/404");
+  const html = await fetch("../../Vue/404.html").then(res => res.text());
+  document.getElementById("main-page").innerHTML = html;
+  document.title = "Page introuvable - " + websiteName;
+};
+
 // Fonction pour récupérer la route correspondant à une URL donnée
 const getRouteByUrl = (url) => {
   let currentRoute = null;
@@ -29,14 +61,13 @@ const LoadContentPage = async () => {
 
   // Vérifie si l'utilisateur a des droits d'accès aux pages
   if (actualRoute.authorize.length > 0) {
-    const role = sessionStorage.getItem("userRole"); 
+    const user = await getServerUser();
+    const role = normalizeRole(user?.role ?? "");
+    const allowedRoles = actualRoute.authorize.map(normalizeRole);
 
-    if (!role || !actualRoute.authorize.includes(role)) {
-      // Redirige vers une page d'erreur
-      window.history.pushState({}, "", "/404");
-      const html = await fetch("../../Vue/404.html").then(res => res.text());
-      document.getElementById("main-page").innerHTML = html;
-      document.title = "Page introuvable - " + websiteName;
+    if (!role || !allowedRoles.includes(role)) {
+      // Redirige vers une page d'erreur si rôle non autorisé côté serveur
+      await render404();
       return;
     }
   }

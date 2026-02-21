@@ -1,3 +1,22 @@
+<?php
+session_start();
+$role = $_SESSION['user_role'] ?? null;
+if ($role === null && isset($_SESSION['user_id'])) {
+    require_once __DIR__ . '/../../Modele/db_connection.php';
+    $stmt = $pdo->prepare('SELECT role FROM utilisateurs WHERE id = :id LIMIT 1');
+    $stmt->execute(['id' => (int) $_SESSION['user_id']]);
+    $role = $stmt->fetchColumn() ?: null;
+    if ($role !== null) {
+        $_SESSION['user_role'] = $role;
+    }
+}
+
+if (!isset($_SESSION['user_id']) || $role !== 'admin') {
+    http_response_code(403);
+    exit('Acces interdit.');
+}
+?>
+
 <link rel="stylesheet" href="../../assets/styles/admin/admin.css">
 
 <!-- Header -->

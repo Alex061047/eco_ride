@@ -1,9 +1,9 @@
 <?php
 // Connexion à la base de données MySQL
-include '../db_connection.php';
+include __DIR__ . '/../db_connection.php';
 
 // Inclure le fichier de gestion des logs MongoDB
-include '../mongodb/mongo_logs.php';
+include __DIR__ . '/../mongodb/mongo_logs.php';
 
 // Fonction pour ajouter un utilisateur à la base de données
 function ajouterUtilisateur($pdo, $pseudo, $email, $mot_de_passe, $role, $credit = 20) {
@@ -57,3 +57,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     exit;
 }
+

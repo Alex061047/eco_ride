@@ -1,5 +1,5 @@
 <?php
-include '../db_connection.php';
+include __DIR__ . '/../db_connection.php';
 header('Content-Type: application/json');
 session_start();
 
@@ -49,3 +49,4 @@ $updatePlaces->execute([
 
 echo json_encode(["success" => true, "message" => "Réservation annulée avec succès"]);
 ?>
+

@@ -1,6 +1,13 @@
 <?php
 // Connexion à la base de données MySQL
-include('../db_connection.php');
+include __DIR__ . '/../db_connection.php';
+session_start();
+
+// Sécurité serveur: accès réservé admin
+if (!isset($_SESSION['user_id']) || (($_SESSION['user_role'] ?? '') !== 'admin')) {
+    echo json_encode(["status" => "error", "message" => "Accès interdit."]);
+    exit;
+}
 
 // Réponse JSON
 header('Content-Type: application/json');
@@ -40,3 +47,4 @@ if ($success) {
     echo json_encode(["status" => "error", "message" => "Erreur lors de la création."]);
 }
 ?>
+

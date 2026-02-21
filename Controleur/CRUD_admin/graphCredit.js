@@ -18,7 +18,7 @@ function genererDerniersJours(nbJours) {
   // Récupération données du serveur
   async function recupererDonneesReelles(labels) {
     try {
-      const response = await fetch("../../Modele/CRUD_admin/graph_credit.php");
+      const response = await fetch("../../Controleur_b/CRUD_admin/graph_credit_controller.php");
       const data = await response.json();
   
       // Création d'un dictionnaire jour/mois : total
@@ -86,7 +86,7 @@ function genererDerniersJours(nbJours) {
   // Récupère et affiche le total cumulé (sans limite de temps)
 async function afficherCreditTotal() {
     try {
-      const res = await fetch("../../Modele/CRUD_admin/get_credit_total.php");
+      const res = await fetch("../../Controleur_b/CRUD_admin/get_credit_total_controller.php");
       const json = await res.json();
       const creditTotalElement = document.getElementById("creditTotal");
       if (creditTotalElement) {

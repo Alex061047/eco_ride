@@ -1,8 +1,8 @@
 <?php
 // Connexion à la base de donnée
-include('../db_connection.php');
+include __DIR__ . '/../db_connection.php';
 // Connexion à MongoDB pour les logs
-include('../mongodb/mongo_logs.php');
+include __DIR__ . '/../mongodb/mongo_logs.php';
 // Démarre la session PHP
 session_start();
 // La réponse sera envoyée au format JSON
@@ -113,3 +113,4 @@ $logsCredit->insertOne([
     echo json_encode(['status' => 'error', 'message' => 'Erreur serveur : ' . $e->getMessage()]);
 }
 ?>
+

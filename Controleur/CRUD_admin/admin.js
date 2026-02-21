@@ -1,11 +1,11 @@
-// Sélection du bouton pour créer un employé
+﻿// Sélection du bouton pour créer un employé
 const btnCreerEmploye = document.getElementById("btn-creer-employe");
 
 // Création dynamique du formulaire avec switch afficher/masquer
 btnCreerEmploye.addEventListener("click", () => {
     const existingForm = document.getElementById("form-employe");
 
-    // Si le formulaire existe déjà, on le supprime
+    // Si le formulaire existe déja , on le supprime
     if (existingForm) {
         existingForm.closest(".card").remove();
         return;
@@ -19,7 +19,7 @@ btnCreerEmploye.addEventListener("click", () => {
     formWrapper.style.maxWidth = "30%";
     formWrapper.style.margin = "0 auto";
     formWrapper.innerHTML = `
-        <h4 class="mb-3 text-center">Créer un compte employé</h4>
+        <h4 class="mb-3 text-center">CrÃ©er un compte employÃ©</h4>
         <form id="form-employe">
             <div class="mb-3">
                 <input type="text" name="pseudo" class="form-control" placeholder="Pseudo" required>
@@ -51,7 +51,7 @@ btnCreerEmploye.addEventListener("click", () => {
         const role = form.role.value;
 
         // Envoie les données au fichier creer_employe.php
-        fetch("../../Modele/CRUD_admin/creer_employe.php", {
+        fetch("../../Controleur_b/CRUD_admin/creer_employe_controller.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ pseudo, email, mot_de_passe, role })
@@ -63,7 +63,7 @@ btnCreerEmploye.addEventListener("click", () => {
             if (data.status === "success") form.reset();
         })
         .catch(err => {
-            message.textContent = "Erreur lors de la requête.";
+            message.textContent = "Erreur lors de la requéte.";
             message.style.color = "red";
         });
     });
@@ -81,7 +81,7 @@ const btnSuspendre = document.getElementById("btn-suspendre-compte");
 btnSuspendre.addEventListener("click", () => {
     const existingTable = document.getElementById("table-utilisateurs");
 
-    // Si le tableau existe déjà, on le retire
+    // Si le tableau existe déja , on le retire
     if (existingTable) {
         existingTable.closest(".card").remove();
         return;
@@ -115,11 +115,21 @@ btnSuspendre.addEventListener("click", () => {
     container.appendChild(tableWrapper);
 
     // Chargement des utilisateurs via PHP
-    fetch("../../Modele/CRUD_admin/get_utilisateurs.php")
-        .then(res => res.json())
+    fetch("../../Controleur_b/CRUD_admin/get_utilisateurs_controller.php")
+        .then(async res => {
+            const text = await res.text();
+            let data;
+            try { data = JSON.parse(text); } catch (e) { throw new Error("Réponse invalide: " + text.slice(0, 200)); }
+            if (!res.ok) throw new Error((data && data.message) ? data.message : "Erreur HTTP " + res.status);
+            return data;
+        })
         .then(data => {
             const tbody = document.querySelector("#table-utilisateurs tbody");
             tbody.innerHTML = "";
+
+            if (!Array.isArray(data)) {
+                throw new Error((data && data.message) ? data.message : "Format inattendu");
+            }
 
             data.forEach(user => {
                 const tr = document.createElement("tr");
@@ -140,7 +150,7 @@ btnSuspendre.addEventListener("click", () => {
 
                 // Ajout de l'écouteur sur le bouton "Suspendre"
                 tr.querySelector(".suspend-btn").addEventListener("click", () => {
-                    fetch("../../Modele/CRUD_admin/suspendre_utilisateur.php", {
+                    fetch("../../Controleur_b/CRUD_admin/suspendre_utilisateur_controller.php", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ id: user.id })
@@ -156,6 +166,12 @@ btnSuspendre.addEventListener("click", () => {
 
                 tbody.appendChild(tr);
             });
+                })
+        .catch(err => {
+            const tbody = document.querySelector("#table-utilisateurs tbody");
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-danger">Erreur chargement utilisateurs : ${err.message}</td></tr>`;
+            }
         });
 
     // Filtrage avec la barre de recherche
@@ -169,4 +185,6 @@ btnSuspendre.addEventListener("click", () => {
         });
     });
 });
+
+
 

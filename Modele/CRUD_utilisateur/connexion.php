@@ -3,7 +3,7 @@
 header("Content-Type: application/json");
 
 // Connexion à la base de données
-require_once("../db_connection.php");
+require_once __DIR__ . '/../db_connection.php';
 
 // Récupération des données envoyées en JSON via la méthode POST
 $data = json_decode(file_get_contents("php://input"), true);
@@ -32,6 +32,7 @@ if (!empty($data["email"]) && !empty($data["mot_de_passe"])) {
 
         session_start(); 
         $_SESSION['user_id'] = $user["id"]; // On stocke l'ID de l'utilisateur connecté
+        $_SESSION['user_role'] = $user["role"]; // On stocke aussi le role côté serveur
 
     // Si l'authentification réussit, retourne un message de succès au format JSON
         echo json_encode(["status" => "success",
@@ -51,3 +52,4 @@ if (!empty($data["email"]) && !empty($data["mot_de_passe"])) {
     echo json_encode(["status" => "error", "message" => "Veuillez remplir tous les champs."]);
 }
 ?>
+

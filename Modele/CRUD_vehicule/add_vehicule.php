@@ -1,15 +1,26 @@
 <?php
 // La réponse renvoyée sera au format JSON
 header("Content-Type: application/json");
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 // Connexion à la base de données + import du système de logs MongoDB
-include '../db_connection.php';
-include '../mongodb/mongo_logs.php';
+include __DIR__ . '/../db_connection.php';
+include __DIR__ . '/../mongodb/mongo_logs.php';
 
 // Vérifie que la requête est bien une requête POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Récupère les données JSON envoyées par le client
-    $data = json_decode(file_get_contents("php://input"), true);
+    $data = $GLOBALS['__JSON_BODY'] ?? json_decode(file_get_contents("php://input"), true);
+    $sessionUserId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 0;
+    $sessionRole = $_SESSION['user_role'] ?? null;
+
+    // Sécurité serveur: utilisateur connecté obligatoire
+    if ($sessionUserId <= 0) {
+        echo json_encode(["status" => "error", "message" => "Utilisateur non connecté."]);
+        exit;
+    }
 
     // Vérifie que les données ont bien été reçues
     if (!$data) {
@@ -24,6 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         empty($data["energie"]) || empty($data["nb_places"])
     ) {
         echo json_encode(["status" => "error", "message" => "Tous les champs sont requis."]);
+        exit;
+    }
+
+    // Sécurité serveur: ajout uniquement sur son propre compte (sauf admin)
+    if ($sessionRole !== 'admin' && (int) $data["utilisateur_id"] !== $sessionUserId) {
+        echo json_encode(["status" => "error", "message" => "Action interdite."]);
         exit;
     }
 
@@ -58,3 +75,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 else {
     echo json_encode(["status" => "error", "message" => "Requête invalide."]);
 }
+

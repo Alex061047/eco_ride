@@ -1,5 +1,5 @@
 <?php
-include '../db_connection.php';
+include __DIR__ . '/../db_connection.php';
 header('Content-Type: application/json');
 session_start();
 
@@ -27,3 +27,4 @@ $trajets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 echo json_encode($trajets);
 ?>
+

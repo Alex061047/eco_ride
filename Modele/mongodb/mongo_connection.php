@@ -1,5 +1,5 @@
 <?php
-require '../../vendor/autoload.php'; 
+require __DIR__ . '/../../vendor/autoload.php'; 
 
 use Dotenv\Dotenv;
 use MongoDB\Client;
@@ -23,6 +23,8 @@ try {
     $logsCollection = $database->logs;
 
 } catch (Exception $e) {
-    die("Erreur de connexion MongoDB : " . $e->getMessage());
+    // Ne bloque pas l'application si Mongo est indisponible.
+    $mongo = null;
+    $logsCollection = null;
 }
 ?>

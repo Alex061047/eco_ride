@@ -1,47 +1,50 @@
 <?php
-// Connexion à la base de données
-include('../db_connection.php');
-// Démarrage de la session pour accéder à l'ID utilisateur
-session_start();
+// Connexion a la base de donnees
+include __DIR__ . '/../db_connection.php';
 
-// Vérifie si l'utilisateur est connecté
+// Demarrage de la session pour acceder a l'ID utilisateur
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+// Verifie si l'utilisateur est connecte
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
-    // Récupération des infos utilisateur
+    // Recuperation des infos utilisateur
     $query = "SELECT id, pseudo, email, photo_profil, role, credit FROM utilisateurs WHERE id = :id";
     $stmt = $pdo->prepare($query);
     $stmt->execute(['id' => $user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        // Récupération des infos véhicule
+        // Recuperation des infos vehicule
         $vehiculeQuery = "SELECT * FROM vehicules WHERE utilisateur_id = :user_id";
         $vehiculeStmt = $pdo->prepare($vehiculeQuery);
         $vehiculeStmt->execute(['user_id' => $user_id]);
         $vehicules = $vehiculeStmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Préférences
+        // Preferences
         $prefQuery = "SELECT * FROM preferences WHERE utilisateur_id = :user_id LIMIT 1";
         $prefStmt = $pdo->prepare($prefQuery);
         $prefStmt->execute(['user_id' => $user_id]);
         $preferences = $prefStmt->fetch(PDO::FETCH_ASSOC);
 
-        // Envoie des données au format JSON
+        // Envoie des donnees au format JSON
         echo json_encode([
             'status' => 'success',
             'user' => $user,
             'vehicules' => $vehicules,
             'preferences' => $preferences ? $preferences : null
-        ]);        
-    } 
+        ], JSON_UNESCAPED_UNICODE);
+    }
     // Utilisateur introuvable
     else {
-        echo json_encode(['status' => 'error', 'message' => 'Utilisateur non trouvé']);
+        echo json_encode(['status' => 'error', 'message' => 'Utilisateur non trouve'], JSON_UNESCAPED_UNICODE);
     }
-} 
-// L'utilisateur n'est pas connecté
+}
+// L'utilisateur n'est pas connecte
 else {
-    echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecté']);
+    echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecte'], JSON_UNESCAPED_UNICODE);
 }
 ?>

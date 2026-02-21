@@ -49,12 +49,18 @@ function attachFormHandler() {
         // Si on est en mode "connexion"
         if (mode === "connexion") {
             // Envoi de la requête pour la connexion
-            fetch('../../Modele/CRUD_utilisateur/connexion.php', {
+            fetch('../../Controleur_b/CRUD_utilisateur/connexion_controller.php', {
                 method: 'POST', // Méthode POST pour envoyer les données
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, mot_de_passe }) // Envoi des données sous forme de chaîne JSON
             })
-            .then(res => res.json()) 
+            .then(async res => {
+                const data = await res.json().catch(() => null);
+                if (!res.ok || !data) {
+                    throw new Error("Réponse serveur invalide");
+                }
+                return data;
+            }) 
             .then(data => {
                 // Affichage du message de retour
                 messageDiv.innerHTML = `<p>${data.message}</p>`;
@@ -63,7 +69,7 @@ function attachFormHandler() {
 
                 // Si la connexion réussit, on effectue une redirection
                 if (data.status === "success") {
-                // Stockage d'un "token" temporaire dans sessionStorage (ici un simple flag, ou un identifiant si tu veux)
+                // Stockage d'un "token" temporaire dans sessionStorage
                  sessionStorage.setItem("isLoggedIn", "true");
                  sessionStorage.setItem("user", JSON.stringify(data.utilisateur)); // Stockage des infos de l'utilisateur
                  // Enregistrement des informations utilisateurs
@@ -74,19 +80,29 @@ function attachFormHandler() {
                  window.location.href = "/EspaceUtilisateur"; // Redirection vers Mon Espace
                 }
             })
-            .catch(err => console.error(err)); 
+            .catch(err => {
+                console.error(err);
+                messageDiv.innerHTML = "<p>Erreur serveur lors de la connexion.</p>";
+                messageDiv.style.color = "red";
+            }); 
         } else {
             // Si on est en mode "inscription"
             const pseudo = form.querySelector('[name="pseudo"]').value; // Récupère le pseudo
             const role = form.querySelector('[name="role"]').value; // Récupère le rôle choisi
 
             // Envoi de la requête pour l'inscription
-            fetch('../../Modele/CRUD_utilisateur/inscription.php', {
+            fetch('../../Controleur_b/CRUD_utilisateur/inscription_controller.php', {
                 method: 'POST', // Méthode POST pour envoyer les données
                 headers: { "Content-Type": "application/json" }, 
                 body: JSON.stringify({ pseudo, email, mot_de_passe, role }) // Envoi des données sous forme de chaîne JSON
             })
-            .then(res => res.json()) 
+            .then(async res => {
+                const data = await res.json().catch(() => null);
+                if (!res.ok || !data) {
+                    throw new Error("Réponse serveur invalide");
+                }
+                return data;
+            }) 
             .then(data => {
                 // Affichage du message de retour
                 messageDiv.innerHTML = `<p>${data.message}</p>`;
@@ -105,7 +121,12 @@ function attachFormHandler() {
                     submitButton.textContent = "Se connecter"; 
                 }
             })
-            .catch(err => console.error(err)); 
+            .catch(err => {
+                console.error(err);
+                messageDiv.innerHTML = "<p>Erreur serveur lors de l'inscription.</p>";
+                messageDiv.style.color = "red";
+            }); 
         }
     });
 }
+

@@ -1,17 +1,32 @@
 <?php
 // Inclusion de la connexion à la base de données
-include '../db_connection.php';
+include __DIR__ . '/../db_connection.php';
+session_start();
 
 // Enregistrement des logs dans MongoDB
-include '../mongodb/mongo_logs.php';
+include __DIR__ . '/../mongodb/mongo_logs.php';
 
 // Vérifie que la requête est bien de type POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $data = json_decode(file_get_contents("php://input"), true);
+    $data = $GLOBALS['__JSON_BODY'] ?? json_decode(file_get_contents("php://input"), true);
+    $sessionUserId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 0;
+    $sessionRole = $_SESSION['user_role'] ?? null;
+
+    // Sécurité serveur: utilisateur connecté obligatoire
+    if ($sessionUserId <= 0) {
+        echo json_encode(["status" => "error", "message" => "Utilisateur non connecté."]);
+        exit;
+    }
 
     // Vérifie que l'ID utilisateur est bien présent
     if (!isset($data['utilisateur_id'])) {
         echo json_encode(["status" => "error", "message" => "ID utilisateur manquant."]);
+        exit;
+    }
+
+    // Sécurité serveur: modification uniquement de ses préférences (sauf admin)
+    if ($sessionRole !== 'admin' && (int) $data['utilisateur_id'] !== $sessionUserId) {
+        echo json_encode(["status" => "error", "message" => "Action interdite."]);
         exit;
     }
 
@@ -68,3 +83,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo json_encode(["status" => "success", "message" => "Préférences mises à jour."]);
 }
 ?>
+

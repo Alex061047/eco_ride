@@ -1,9 +1,9 @@
 <?php
 
 // Connexions à la base de données MySQL
-require '../db_connection.php';
+require __DIR__ . '/../db_connection.php';
 // Connexions à la base de données MongoDB
-require '../mongodb/mongo_connection.php';
+require __DIR__ . '/../mongodb/mongo_connection.php';
 
 header('Content-Type: application/json');
 
@@ -72,3 +72,4 @@ try {
     echo json_encode(["status" => "error", "message" => "Erreur serveur : " . $e->getMessage()]);
     exit;
 }
+

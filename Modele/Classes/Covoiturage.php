@@ -1,11 +1,19 @@
-<?php
-// Déclaration de la classe Covoiturage représentant un trajet
-class Covoiturage {
-    // Déclaration des propriétés publiques de la classe
-    public $id, $depart, $arrivee, $jour, $heure, $duree, $nb_places_restantes, $prix, $etat, $energie;
+﻿<?php
+class Covoiturage
+{
+    public $id;
+    public $depart;
+    public $arrivee;
+    public $jour;
+    public $heure;
+    public $duree;
+    public $nb_places_restantes;
+    public $prix;
+    public $etat;
+    public $energie;
 
-    // Constructeur
-    public function __construct($row) {
+    public function __construct($row)
+    {
         $this->id = $row['id'];
         $this->depart = $row['depart'];
         $this->arrivee = $row['arrivee'];
@@ -18,13 +26,13 @@ class Covoiturage {
         $this->energie = $row['energie'];
     }
 
-    // Méthode pour déterminer si le covoiturage est écologique
-    public function mentionEcologique() {
-        return strtolower($this->energie) === 'electrique' || strtolower($this->energie) === 'électrique' ? 'Oui' : 'Non';
+    public function mentionEcologique()
+    {
+        return strtolower((string) $this->energie) === 'electrique' ? 'Oui' : 'Non';
     }
 
-    // Méthode pour convertir l’objet en tableau associatif et être encodé en JSON
-    public function toArray() {
+    public function toArray()
+    {
         return [
             'id' => $this->id,
             'depart' => $this->depart,
@@ -35,7 +43,7 @@ class Covoiturage {
             'nb_places_restantes' => $this->nb_places_restantes,
             'prix' => $this->prix,
             'etat' => $this->etat,
-            'mention_ecologique' => $this->mentionEcologique()
+            'mention_ecologique' => $this->mentionEcologique(),
         ];
     }
 }

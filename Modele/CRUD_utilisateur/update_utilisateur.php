@@ -1,16 +1,31 @@
 <?php
 // Connexion à la base de données + MongoDB pour enregistrer les logs
-include '../db_connection.php';
-include '../mongodb/mongo_logs.php';
+include __DIR__ . '/../db_connection.php';
+include __DIR__ . '/../mongodb/mongo_logs.php';
+session_start();
 
 // Vérifie que la requête est de type POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Récupération des données envoyées en JSON
-    $data = json_decode(file_get_contents("php://input"), true);
+    $data = $GLOBALS['__JSON_BODY'] ?? json_decode(file_get_contents("php://input"), true);
+    $sessionUserId = $_SESSION['user_id'] ?? null;
+    $sessionRole = $_SESSION['user_role'] ?? null;
+
+    // Sécurité serveur: utilisateur connecté obligatoire
+    if (!$sessionUserId) {
+        echo json_encode(["status" => "error", "message" => "Utilisateur non connecté."]);
+        exit;
+    }
 
      // Vérifie que l'ID utilisateur est bien fourni
     if (!isset($data['id'])) {
         echo json_encode(["status" => "error", "message" => "ID utilisateur manquant."]);
+        exit;
+    }
+
+    // Sécurité serveur: interdit de modifier un autre compte (sauf admin)
+    if ($sessionRole !== 'admin' && (int) $data['id'] !== (int) $sessionUserId) {
+        echo json_encode(["status" => "error", "message" => "Action interdite."]);
         exit;
     }
 
@@ -32,6 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Mise à jour du rôle si présent
     if (!empty($data['role'])) {
+        if ($sessionRole !== 'admin') {
+            echo json_encode(["status" => "error", "message" => "Seul un admin peut modifier le rôle."]);
+            exit;
+        }
         $fields[] = "role = :role";
         $params[':role'] = $data['role'];
     }
@@ -59,3 +78,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo json_encode(["status" => "success", "message" => "Utilisateur mis à jour avec succès."]);
 }
 ?>
+

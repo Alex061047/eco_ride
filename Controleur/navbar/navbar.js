@@ -1,5 +1,5 @@
-window.addEventListener('DOMContentLoaded', () => {
-    // Récupération des éléments de la barre de navigation par leur ID
+window.addEventListener('DOMContentLoaded', async () => {
+    // Elements de navigation
     const monEspaceItem = document.getElementById('mon-espace-item');
     const dashboardItem = document.getElementById('dashboard-item');
     const logoutItem = document.getElementById('logout-item');
@@ -7,55 +7,83 @@ window.addEventListener('DOMContentLoaded', () => {
     const logoutLink = document.getElementById('logout-link');
     const dashboardAdminItem = document.getElementById('dashboard-admin');
 
+    const normaliserRole = (role) => {
+        if (!role) return '';
+        return String(role)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+    };
 
-    // Vérifie si l'utilisateur est connecté et récupère son rôle
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-    const userRole = sessionStorage.getItem("userRole");
+    const afficherConnecte = (role) => {
+        const roleNormalise = normaliserRole(role);
+        if (monEspaceItem) monEspaceItem.style.display = 'block';
+        if (logoutItem) logoutItem.style.display = 'block';
+        if (loginItem) loginItem.style.display = 'none';
 
-    // Affiche les bons éléments à l'utilisateur en fonction de son role
-    if (isLoggedIn) {
-        // Utilisateur connecté
-        monEspaceItem.style.display = "block";  // Affiche "Mon espace"
-        logoutItem.style.display = "block"; // Affiche "Déconnexion"
-        loginItem.style.display = "none"; // Masque "Connexion"
-
-        // Affiche le tableau de bord si l'utilisateur est un employé
-        if (userRole === "employe") {
-            dashboardItem.style.display = "block";
-        } else if (dashboardItem) {
-            dashboardItem.style.display = "none";
-        }
-        // Affiche le tableau de bord si l'utilisateur est un administrateur
-        if (userRole === "admin") {
-            dashboardAdminItem.style.display = "block";
-        } else if (dashboardAdminItem) {
-            dashboardAdminItem.style.display = "none";
-        }
-    } else {
-        // Utilisateur non connecté
-        monEspaceItem.style.display = "none"; // Masque "Mon espace"
-        logoutItem.style.display = "none"; // Masque "Déconnexion"
-        loginItem.style.display = "block"; // Affiche "Connexion"
-
-        // Masque le dashboard si besoin (sécurité supplémentaire)
         if (dashboardItem) {
-            dashboardItem.style.display = "none";
+            dashboardItem.style.display = roleNormalise === 'employe' ? 'block' : 'none';
+        }
+        if (dashboardAdminItem) {
+            dashboardAdminItem.style.display = roleNormalise === 'admin' ? 'block' : 'none';
+        }
+    };
+
+    const afficherDeconnecte = () => {
+        if (monEspaceItem) monEspaceItem.style.display = 'none';
+        if (logoutItem) logoutItem.style.display = 'none';
+        if (loginItem) loginItem.style.display = 'block';
+        if (dashboardItem) dashboardItem.style.display = 'none';
+        if (dashboardAdminItem) dashboardAdminItem.style.display = 'none';
+    };
+
+    // Verification session + role cote serveur
+    let user = null;
+    try {
+        const response = await fetch('../../Controleur_b/CRUD_vehicule/get_user_controller.php');
+        const data = await response.json();
+
+        if (data && data.status === 'success' && data.user) {
+            user = data.user;
+        }
+    } catch (error) {
+        console.error('Erreur verification utilisateur navbar :', error);
+    }
+
+    if (user) {
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('userId', user.id);
+        sessionStorage.setItem('userRole', normaliserRole(user.role));
+        sessionStorage.setItem('userPseudo', user.pseudo || '');
+        afficherConnecte(user.role);
+    } else {
+        // Fallback UX: si l'appel serveur echoue, on garde l'affichage base sur sessionStorage.
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+        const savedRole = normaliserRole(sessionStorage.getItem('userRole') || '');
+        if (isLoggedIn && savedRole) {
+            afficherConnecte(savedRole);
+        } else {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('userRole');
+            sessionStorage.removeItem('userId');
+            sessionStorage.removeItem('userPseudo');
+            afficherDeconnecte();
         }
     }
 
-    // Gestion du clic sur "Déconnexion"
+    // Deconnexion
     if (logoutLink) {
-        logoutLink.addEventListener("click", (e) => {
+        logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            sessionStorage.removeItem("isLoggedIn");
-            sessionStorage.removeItem("userRole");
-            sessionStorage.removeItem("userId");
-            sessionStorage.removeItem("userPseudo");
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('userRole');
+            sessionStorage.removeItem('userId');
+            sessionStorage.removeItem('userPseudo');
 
-            // Déconnexion côté serveur
-            fetch("../../Modele/CRUD_utilisateur/logout.php")
+            fetch('../../Controleur_b/CRUD_utilisateur/logout_controller.php')
                 .then(() => {
-                    window.location.href = "/"; 
+                    window.location.href = '/';
                 });
         });
     }

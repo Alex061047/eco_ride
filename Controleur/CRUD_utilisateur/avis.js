@@ -10,7 +10,7 @@ let trajetId = null;
 
 // Vérification de l'autorisation via le token
 
-fetch(`../../Modele/CRUD_utilisateur/avis_auth.php?token=${token}`)
+fetch(`../../Controleur_b/CRUD_utilisateur/avis_auth_controller.php?token=${token}`)
     .then(res => res.json())
     .then(data => {
         const resultDiv = document.getElementById("resultat");
@@ -116,7 +116,7 @@ document.getElementById("form-avis").addEventListener("submit", function (e) {
  
 
     // Envoi des données au serveur en JSON
-    fetch("../../Modele/CRUD_utilisateur/submit_avis.php", {
+    fetch("../../Controleur_b/CRUD_utilisateur/submit_avis_controller.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(objet)
@@ -140,3 +140,4 @@ document.getElementById("form-avis").addEventListener("submit", function (e) {
         document.getElementById("resultat").innerHTML = "<div class='alert alert-danger'>Erreur lors de l'envoi de l'avis.</div>";
     });
 });
+
