@@ -249,7 +249,7 @@ eco_ride/
 |
 |-- uploads/ # Dossier de stockage des photos de profil
 |
-|-- Vue/ # Pages front (administrateur, connexion, covoiturage, employA , footer, accueil, utilisateur, 404, navigation )
+|-- Vue/ # Pages front (administrateur, connexion, covoiturage, employé , footer, accueil, utilisateur, 404, navigation )
 | |-- admin/ # Page administrateur 
 | |-- connexion/ # Page de connexion
 | |-- covoit/ # Page des covoiturages
