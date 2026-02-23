@@ -13,7 +13,7 @@ const normalizeRole = (role) => {
     .trim();
 };
 
-// Récupère l'utilisateur connecté depuis le serveur (source fiable).
+// Récupère l'utilisateur connecté depuis le serveur.
 const getServerUser = async () => {
   try {
     const response = await fetch("../../Controleur_b/CRUD_vehicule/get_user_controller.php");
